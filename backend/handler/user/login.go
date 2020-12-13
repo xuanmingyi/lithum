@@ -18,7 +18,7 @@ import (
 // @Router /login [post]
 func Login(c *gin.Context) {
 	// Binding the data with the user struct.
-	var u model.UserModel
+	var u model.User
 	if err := c.Bind(&u); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return
@@ -38,7 +38,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Sign the json web token.
-	t, err := token.Sign(c, token.Context{ID: d.Id, Username: d.Username}, "")
+	t, err := token.Sign(c, token.Context{ID: d.ID, Username: d.Username}, "")
 	if err != nil {
 		SendResponse(c, errno.ErrToken, nil)
 		return

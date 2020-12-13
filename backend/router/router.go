@@ -47,6 +47,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		u.GET("/:username", user.Get)
 	}
 
+	u = g.Group("/v1/role")
+	{
+	}
 	// The health check handlers
 	svcd := g.Group("/sd")
 	{

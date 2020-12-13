@@ -27,7 +27,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	u := model.UserModel{
+	u := model.User{
 		Username: r.Username,
 		Password: r.Password,
 	}

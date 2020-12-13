@@ -17,7 +17,7 @@ func ListUser(username string, offset, limit int) ([]*model.UserInfo, uint64, er
 
 	ids := []uint64{}
 	for _, user := range users {
-		ids = append(ids, user.Id)
+		ids = append(ids, user.ID)
 	}
 
 	wg := sync.WaitGroup{}
@@ -32,7 +32,7 @@ func ListUser(username string, offset, limit int) ([]*model.UserInfo, uint64, er
 	// Improve query efficiency in parallel
 	for _, u := range users {
 		wg.Add(1)
-		go func(u *model.UserModel) {
+		go func(u *model.User) {
 			defer wg.Done()
 
 			shortId, err := util.GenShortId()
@@ -43,8 +43,8 @@ func ListUser(username string, offset, limit int) ([]*model.UserInfo, uint64, er
 
 			userList.Lock.Lock()
 			defer userList.Lock.Unlock()
-			userList.IdMap[u.Id] = &model.UserInfo{
-				Id:        u.Id,
+			userList.IdMap[u.ID] = &model.UserInfo{
+				Id:        u.ID,
 				Username:  u.Username,
 				SayHello:  fmt.Sprintf("Hello %s", shortId),
 				Password:  u.Password,

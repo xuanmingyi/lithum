@@ -28,14 +28,14 @@ func Update(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Param("id"))
 
 	// Binding the user data.
-	var u model.UserModel
+	var u model.User
 	if err := c.Bind(&u); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return
 	}
 
 	// We update the record based on the user id.
-	u.Id = uint64(userId)
+	u.ID = uint64(userId)
 
 	// Validate the data.
 	if err := u.Validate(); err != nil {
