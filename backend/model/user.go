@@ -12,8 +12,10 @@ import (
 // User represents a registered user.
 type User struct {
 	BaseModel
-	Username string `json:"username" gorm:"column:username;not null" binding:"required" validate:"min=1,max=32"`
+	Username string `json:"name" gorm:"column:username;not null" binding:"required" validate:"min=1,max=32"`
 	Password string `json:"password" gorm:"column:password;not null" binding:"required" validate:"min=5,max=128"`
+	Introduction string `json:"introduction"`
+	Avatar string `json:"avatar"`
 	Roles []Role `gorm:"many2many:users_roles;'"`
 }
 

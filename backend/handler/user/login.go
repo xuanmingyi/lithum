@@ -8,7 +8,21 @@ import (
 	"lithum/pkg/token"
 
 	"github.com/gin-gonic/gin"
+
+	"fmt"
 )
+
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Name string `json:"name"`
+	Avatar string `json:"avatar"`
+	Introduction string `json:"introduction"`
+}
+
 
 // @Summary Login generates the authentication token
 // @Produce  json
@@ -18,21 +32,21 @@ import (
 // @Router /login [post]
 func Login(c *gin.Context) {
 	// Binding the data with the user struct.
-	var u model.User
-	if err := c.Bind(&u); err != nil {
+	var req LoginRequest
+	if err := c.Bind(&req); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return
 	}
 
 	// Get the user information by the login username.
-	d, err := model.GetUser(u.Username)
+	d, err := model.GetUser(req.Username)
 	if err != nil {
 		SendResponse(c, errno.ErrUserNotFound, nil)
 		return
 	}
 
 	// Compare the login password with the user password.
-	if err := auth.Compare(d.Password, u.Password); err != nil {
+	if err := auth.Compare(d.Password, req.Password); err != nil {
 		SendResponse(c, errno.ErrPasswordIncorrect, nil)
 		return
 	}
@@ -43,6 +57,11 @@ func Login(c *gin.Context) {
 		SendResponse(c, errno.ErrToken, nil)
 		return
 	}
+	fmt.Println(t)
+	var response LoginResponse
+	response.Name = d.Username
+	response.Avatar = d.Avatar
+	response.Introduction = d.Introduction
 
-	SendResponse(c, nil, model.Token{Token: t})
+	SendResponse(c, nil, response)
 }
