@@ -26,9 +26,9 @@ func Me(c *gin.Context) {
 	}
 
 	SendResponse(c, nil, MeResponse{
-		Username: d.Username,
-		Nickname: d.Nickname,
+		Username:     d.Username,
+		Nickname:     d.Nickname,
 		Introduction: d.Introduction,
-		Avatar: d.Avatar,
+		Avatar:       d.Avatar,
 	})
 }

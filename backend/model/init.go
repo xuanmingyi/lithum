@@ -11,7 +11,7 @@ import (
 )
 
 type Database struct {
-	Self   *gorm.DB
+	Self *gorm.DB
 }
 
 var DB *Database
@@ -56,8 +56,6 @@ func InitSelfDB() *gorm.DB {
 func GetSelfDB() *gorm.DB {
 	return InitSelfDB()
 }
-
-
 
 func (db *Database) Init() {
 	DB = &Database{

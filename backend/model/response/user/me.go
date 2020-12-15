@@ -1,8 +1,8 @@
 package user
 
 type MeResponse struct {
-	Username string `json:"username"`
-	Nickname string `json"nickname"`
+	Username     string `json:"username"`
+	Nickname     string `json"nickname"`
 	Introduction string `json:"introduction"`
-	Avatar string `json:"avatar"`
+	Avatar       string `json:"avatar"`
 }

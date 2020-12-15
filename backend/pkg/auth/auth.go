@@ -13,5 +13,5 @@ func Encrypt(source string) (string, error) {
 // Compare compares the encrypted text with the plain text if it's the same.
 func Compare(hashedPassword, password string) error {
 	return nil
-//	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	//	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

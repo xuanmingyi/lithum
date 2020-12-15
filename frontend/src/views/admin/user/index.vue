@@ -5,7 +5,7 @@
         <el-input v-model="input" placeholder="请输入内容"></el-input>
       </el-col>
       <el-col :span="6" :offset="12">
-        <el-button type="primary">主要按钮</el-button>
+        <el-button type="primary">创建</el-button>
         <el-button type="success">成功按钮</el-button>
       </el-col>
     </el-row>
@@ -59,6 +59,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
     <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="活动名称" :label-width="formLabelWidth">
@@ -103,7 +112,8 @@ export default {
       dialogFormVisible: false,
       formLabelWidth: 1000,
       list: null,
-      listLoading: true
+      listLoading: true,
+      currentPage4: 1
     }
   },
   created() {
@@ -116,6 +126,16 @@ export default {
         this.list = response.data.items
         this.listLoading = false
       })
+    },
+    handleEdit(index, row) {
+      console.log(index, row.id)
+    },
+    handleSizeChange() {
+    },
+    handleCurrentChange() {
+    },
+    handleDelete(index, row) {
+      console.log(index, row.id)
     }
   }
 }

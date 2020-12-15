@@ -14,6 +14,6 @@ type CreateResponse struct {
 }
 
 type SwaggerListResponse struct {
-	TotalCount uint64           `json:"totalCount"`
+	TotalCount uint64     `json:"totalCount"`
 	UserList   []UserInfo `json:"userList"`
 }

@@ -3,7 +3,7 @@ package model
 type Role struct {
 	BaseModel
 	Rolename string `json:"rolename" gorm:"column:rolename;not null"`
-	Users[] User `gorm:"many2many:users_roles;'"`
+	Users    []User `gorm:"many2many:users_roles;'"`
 }
 
 func (role *Role) Create() error {
@@ -16,7 +16,7 @@ func DeleteRole(id uint64) error {
 	return DB.Self.Delete(&role).Error
 }
 
-func (role *Role)Update() error {
+func (role *Role) Update() error {
 	return DB.Self.Save(role).Error
 }
 

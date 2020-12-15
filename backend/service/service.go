@@ -43,13 +43,13 @@ func ListUser(username string, offset, limit int) ([]*UserInfo, uint64, error) {
 			userList.Lock.Lock()
 			defer userList.Lock.Unlock()
 			userList.IdMap[u.ID] = &UserInfo{
-				Id:        u.ID,
-				Username:  u.Username,
-				Nickname: u.Nickname,
+				Id:           u.ID,
+				Username:     u.Username,
+				Nickname:     u.Nickname,
 				Introduction: u.Introduction,
-				Avatar: u.Avatar,
-				CreatedAt: u.CreatedAt.Format("2006-01-02 15:04:05"),
-				UpdatedAt: u.UpdatedAt.Format("2006-01-02 15:04:05"),
+				Avatar:       u.Avatar,
+				CreatedAt:    u.CreatedAt.Format("2006-01-02 15:04:05"),
+				UpdatedAt:    u.UpdatedAt.Format("2006-01-02 15:04:05"),
 			}
 		}(u)
 	}

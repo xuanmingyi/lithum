@@ -34,6 +34,6 @@ func List(c *gin.Context) {
 
 	SendResponse(c, nil, ListResponse{
 		Count: count,
-		Items:   items,
+		Items: items,
 	})
 }
