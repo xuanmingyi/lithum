@@ -38,6 +38,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// api for authentication functionalities
 	g.POST("/v1/login", user.Login)
 
+	g.POST("/v1/logout", user.Logout, middleware.AuthMiddleware())
+	g.GET("/v1/me", user.Me, middleware.AuthMiddleware())
+
 	// The user handlers, requiring authentication
 	userGroup := g.Group("/v1/user")
 	userGroup.Use(middleware.AuthMiddleware())

@@ -2,27 +2,16 @@ package user
 
 import (
 	. "lithum/handler"
+	. "lithum/model/request/user"
+	. "lithum/model/response/user"
+
 	"lithum/model"
 	"lithum/pkg/auth"
 	"lithum/pkg/errno"
 	"lithum/pkg/token"
 
 	"github.com/gin-gonic/gin"
-
-	"fmt"
 )
-
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type LoginResponse struct {
-	Name string `json:"name"`
-	Avatar string `json:"avatar"`
-	Introduction string `json:"introduction"`
-}
-
 
 // @Summary Login generates the authentication token
 // @Produce  json
@@ -32,21 +21,21 @@ type LoginResponse struct {
 // @Router /login [post]
 func Login(c *gin.Context) {
 	// Binding the data with the user struct.
-	var req LoginRequest
-	if err := c.Bind(&req); err != nil {
+	var r LoginRequest
+	if err := c.Bind(&r); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return
 	}
 
 	// Get the user information by the login username.
-	d, err := model.GetUser(req.Username)
+	d, err := model.GetUser(r.Username)
 	if err != nil {
 		SendResponse(c, errno.ErrUserNotFound, nil)
 		return
 	}
 
 	// Compare the login password with the user password.
-	if err := auth.Compare(d.Password, req.Password); err != nil {
+	if err := auth.Compare(d.Password, r.Password); err != nil {
 		SendResponse(c, errno.ErrPasswordIncorrect, nil)
 		return
 	}
@@ -57,11 +46,9 @@ func Login(c *gin.Context) {
 		SendResponse(c, errno.ErrToken, nil)
 		return
 	}
-	fmt.Println(t)
-	var response LoginResponse
-	response.Name = d.Username
-	response.Avatar = d.Avatar
-	response.Introduction = d.Introduction
 
-	SendResponse(c, nil, response)
+	var rsp LoginResponse
+	rsp.Token = t
+
+	SendResponse(c, nil, rsp)
 }

@@ -16,6 +16,7 @@ type User struct {
 	Password string `json:"password" gorm:"column:password;not null" binding:"required" validate:"min=5,max=128"`
 	Introduction string `json:"introduction"`
 	Avatar string `json:"avatar"`
+	Nickname string
 	Roles []Role `gorm:"many2many:users_roles;'"`
 }
 

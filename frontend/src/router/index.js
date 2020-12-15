@@ -56,6 +56,28 @@ export const constantRoutes = [
   },
 
   {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/user',
+    name: '网站管理',
+    meta: { title: '网站管理', icon: 'tree' },
+    children: [
+      {
+        path: 'user',
+        name: '用户',
+        component: () => import('@/views/admin/user/index'),
+        meta: { title: '用户', icon: 'user' }
+      },
+      {
+        path: 'role',
+        name: '角色',
+        component: () => import('@/views/admin/role/index'),
+        meta: { title: '角色', icon: 'eye' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
