@@ -26,7 +26,8 @@ func List(c *gin.Context) {
 		return
 	}
 
-	items, count, err := service.ListUser(r.Username, r.Offset, r.Limit)
+	offset := (r.Page - 1) * r.Limit
+	items, count, err := service.ListUser(r.Username, offset, r.Limit)
 	if err != nil {
 		SendResponse(c, err, nil)
 		return

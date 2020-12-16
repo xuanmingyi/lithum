@@ -15,10 +15,11 @@ export function logout() {
   })
 }
 
-export function userList() {
+export function userList(params) {
   return request({
     url: '/user',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

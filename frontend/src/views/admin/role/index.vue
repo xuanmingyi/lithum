@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20" style="margin-bottom: 30px;">
-      <el-col :span="6">
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-      </el-col>
-      <el-col :span="6" :offset="12">
-        <el-button type="primary">创建</el-button>
-        <el-button type="success">成功按钮</el-button>
-      </el-col>
-    </el-row>
+    <div class="table-header">
+      <div class="table-search">
+        <el-input v-model="search" placeholder="搜索内容" @keyup.enter.native="fetchData" />
+      </div>
+      <div class="table-actions">
+        <el-button type="primary" @click="createDialog.visible = true">创建</el-button>
+      </div>
+    </div>
+
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -22,67 +22,81 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="Title">
+      <el-table-column label="用户名" align="center">
         <template slot-scope="scope">
           {{ scope.row.username }}
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="昵称" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.created_at }}</span>
+          <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="介绍" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.introduction }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="创建时间" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.avatar }}</span>
+          <span>{{ scope.row.created_at | timeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Pageviews" width="110" align="center">
+      <el-table-column label="更新时间" align="center">
         <template slot-scope="scope">
-          {{ scope.row.updated_at }}
+          {{ scope.row.updated_at | timeFilter }}
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            @click="handleEdit(scope.$index, scope.row)"
+          >编辑</el-button>
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      class="table-footer"
+      :current-page="pagination.current"
+      :page-sizes="[10, 20, 30, 50]"
+      :page-size="10"
+      :total="pagination.total"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination>
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+      @size-change="handlePageSizeChange"
+      @current-change="handlePageCurrentChange"
+    />
+    <el-dialog title="创建用户" :visible.sync="createDialog.visible">
+      <el-form :model="createDialog">
+        <el-form-item label="用户名" :label-width="createDialog.labelWidth">
+          <el-input v-model="createDialog.username" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+        <el-form-item label="昵称" :label-width="createDialog.labelWidth">
+          <el-input v-model="createDialog.nickname" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="createDialog.visible = false">取 消</el-button>
+        <el-button type="primary" @click="createDialog.visible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="更新用户" :visible.sync="updateDialog.visible">
+      <el-form :model="updateDialog">
+        <el-form-item label="用户名" :label-width="updateDialog.labelWidth">
+          <el-input v-model="updateDialog.username" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="昵称" :label-width="updateDialog.labelWidth">
+          <el-input v-model="updateDialog.nickname" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="updateDialog.visible = false">取 消</el-button>
+        <el-button type="primary" @click="updateDialog.visible = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -93,27 +107,42 @@ import { userList } from '@/api/user'
 
 export default {
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
+    timeFilter(time) {
+      var delta = (Date.parse(new Date()) - Date.parse(time)) / 1000
+      if (delta < 60) {
+        return delta + ' 秒前'
       }
-      return statusMap[status]
+      if (delta < 3600) {
+        return parseInt(delta / 60) + ' 分钟前'
+      }
+      if (delta < 86400) {
+        return parseInt(delta / 3600) + ' 小时前'
+      }
+      return parseInt(delta / 86400) + ' 天前'
     }
   },
   data() {
     return {
-      input: '',
-      form: {
-        name: 'sss',
-        region: 'mm'
+      search: '',
+      pagination: {
+        total: 0,
+        current: 1,
+        size: 10
       },
-      dialogFormVisible: false,
-      formLabelWidth: 1000,
+      createDialog: {
+        visible: false,
+        username: '',
+        nickname: '',
+        labelWidth: '100'
+      },
+      updateDialog: {
+        visible: false,
+        username: '',
+        nickname: '',
+        labelWidth: '100'
+      },
       list: null,
-      listLoading: true,
-      currentPage4: 1
+      listLoading: true
     }
   },
   created() {
@@ -121,22 +150,70 @@ export default {
   },
   methods: {
     fetchData() {
+      console.log(this.search)
       this.listLoading = true
-      userList().then(response => {
+      const req = {
+        username: this.search,
+        page: this.pagination.current,
+        limit: this.pagination.size
+      }
+      userList(req).then(response => {
+        this.pagination.total = response.data.count
         this.list = response.data.items
         this.listLoading = false
       })
     },
+    handlePageSizeChange(val) {
+      this.pagination.size = val
+      this.pagination.current = 1
+      this.fetchData()
+    },
+    handlePageCurrentChange(val) {
+      this.pagination.current = val
+      this.fetchData()
+    },
     handleEdit(index, row) {
-      console.log(index, row.id)
-    },
-    handleSizeChange() {
-    },
-    handleCurrentChange() {
+      this.updateDialog.username = row.username
+      this.updateDialog.nickname = row.nickname
+      this.updateDialog.visible = true
     },
     handleDelete(index, row) {
-      console.log(index, row.id)
+      this.$confirm('此操作将删除 ' + row.username + ' , 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
 </script>
+
+<style scoped>
+.table-header {
+  margin: 10px 0px;
+}
+
+.table-search {
+  display: inline-block;
+  width: 40%;
+}
+
+.table-actions {
+  float: right;
+}
+
+.table-footer {
+  float: right;
+  margin: 20px 20px;
+}
+</style>
