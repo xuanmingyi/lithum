@@ -57,11 +57,11 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
           >删除</el-button>
-          <el-dropdown @command="handleCommand">
-  <span class="el-dropdown-link">
-    下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-  </span>
-            <el-dropdown-menu slot="dropdown">
+          <el-dropdown class="el-button el-button--mini more" @command="handleCommand">
+            <span class="el-dropdown-link">
+              更多操作<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown" class="more-items">
               <el-dropdown-item command="a">黄金糕</el-dropdown-item>
               <el-dropdown-item command="b">狮子头</el-dropdown-item>
               <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
@@ -204,6 +204,8 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    handleCommand() {
     }
   }
 }
@@ -226,5 +228,9 @@ export default {
 .table-footer {
   float: right;
   margin: 20px 20px;
+}
+
+.more-items {
+  width: 96px;
 }
 </style>
