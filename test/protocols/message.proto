@@ -1,0 +1,12 @@
+syntax = "proto3";
+package protocols;
+
+option go_package = ".;protocols";
+
+import "google/protobuf/any.proto";
+
+message RPCMessage {
+  string name = 1;
+  string message_id = 2;
+  google.protobuf.Any details = 3;
+}

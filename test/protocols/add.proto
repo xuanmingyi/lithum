@@ -1,0 +1,13 @@
+syntax = "proto3";
+package protocols;
+
+option go_package = ".;protocols";
+
+message AddRequest {
+  int32 col1 = 1;
+  int32 col2 = 2;
+}
+
+message AddResponse {
+  int32 sum = 1;
+}

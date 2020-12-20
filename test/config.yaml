@@ -1,0 +1,7 @@
+
+rpc:
+  type: "nsq"
+  nsq:
+    nslookupd_tcp_address: "127.0.0.1:4150"
+    channel: "mq"
+    topic: "test1"
