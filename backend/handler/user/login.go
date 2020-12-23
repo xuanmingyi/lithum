@@ -20,7 +20,7 @@ import (
 // @Success 200 {string} json "{"code":0,"message":"OK","data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjgwMTY5MjIsImlkIjowLCJuYmYiOjE1MjgwMTY5MjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LjxrK9DuAwAzUD8-9v43NzWBN7HXsSLfebw92DKd1JQ"}}"
 // @Router /login [post]
 func Login(c *gin.Context) {
-	// Binding the data with the user struct.
+	// Binding the data with the user form.
 	var r LoginRequest
 	if err := c.Bind(&r); err != nil {
 		SendResponse(c, errno.ErrBind, nil)

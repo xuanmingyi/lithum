@@ -65,7 +65,7 @@ func ListUser(username string, offset, limit int) ([]*User, uint64, error) {
 	return users, count, nil
 }
 
-// Compare with the plain text password. Returns true if it's the same as the encrypted one (in the `User` struct).
+// Compare with the plain text password. Returns true if it's the same as the encrypted one (in the `User` form).
 func (user *User) Compare(pwd string) (err error) {
 	err = auth.Compare(user.Password, pwd)
 	return

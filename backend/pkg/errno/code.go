@@ -4,7 +4,7 @@ var (
 	// Common errors
 	OK                  = &Errno{Code: 20000, Message: "OK"}
 	InternalServerError = &Errno{Code: 10001, Message: "Internal server error"}
-	ErrBind             = &Errno{Code: 10002, Message: "Error occurred while binding the request body to the struct."}
+	ErrBind             = &Errno{Code: 10002, Message: "Error occurred while binding the request body to the form."}
 
 	ErrValidation = &Errno{Code: 20001, Message: "Validation failed."}
 	ErrDatabase   = &Errno{Code: 20002, Message: "Database error."}
