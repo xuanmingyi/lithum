@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function form_user(data) {
+export function formCreate(data) {
   return request({
-    url: '/form/user',
-    method: 'get'
+    url: '/form',
+    method: 'post',
+    data
   })
 }

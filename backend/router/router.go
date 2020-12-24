@@ -1,6 +1,7 @@
 package router
 
 import (
+	"lithum/handler/field"
 	"lithum/handler/form"
 	"net/http"
 
@@ -33,8 +34,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// swagger api docs
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-
-	g.GET("/v1/form/user", form.FormStruct)
 	// pprof router
 	pprof.Register(g)
 
@@ -43,6 +42,22 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 
 	g.POST("/v1/logout", user.Logout, middleware.AuthMiddleware())
 	g.GET("/v1/me", user.Me, middleware.AuthMiddleware())
+
+	fieldGroup := g.Group("/v1/field")
+	fieldGroup.Use(middleware.AuthMiddleware())
+	{
+		fieldGroup.POST("", field.Create)
+	}
+
+	formGroup := g.Group("/v1/form")
+	formGroup.Use(middleware.AuthMiddleware())
+	{
+		formGroup.POST("", form.Create)
+		formGroup.DELETE("/:id", form.Delete)
+		formGroup.PUT("/:id", form.Update)
+		formGroup.GET("", form.List)
+		formGroup.GET("/:id", form.Get)
+	}
 
 	// The user handlers, requiring authentication
 	userGroup := g.Group("/v1/user")
