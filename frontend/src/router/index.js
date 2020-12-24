@@ -73,6 +73,12 @@ export const constantRoutes = [
         name: '角色',
         component: () => import('@/views/admin/role/index'),
         meta: { title: '角色', icon: 'eye' }
+      },
+      {
+        path: 'form',
+        name: '表单',
+        component: () => import('@/views/admin/form/index'),
+        meta: { title: '表单', icon: 'el-icon-cpu' }
       }
     ]
   },

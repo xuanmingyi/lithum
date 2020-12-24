@@ -50,7 +50,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	formGroup := g.Group("/v1/form")
-	formGroup.Use(middleware.AuthMiddleware())
 	{
 		formGroup.POST("", form.Create)
 		formGroup.DELETE("/:id", form.Delete)

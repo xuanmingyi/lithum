@@ -7,3 +7,11 @@ export function formCreate(data) {
     data
   })
 }
+
+export function formList(params) {
+  return request({
+    url: '/form',
+    method: 'get',
+    params
+  })
+}

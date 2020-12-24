@@ -5,7 +5,6 @@ import (
 	"lithum/handler"
 	"lithum/model"
 	. "lithum/model/request/form"
-	. "lithum/model/response/form"
 	"lithum/pkg/errno"
 )
 
