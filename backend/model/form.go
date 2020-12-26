@@ -11,7 +11,7 @@ type SysForm struct {
 	LabelPosition string `gorm:"column:label_position"`
 	LabelWidth    uint8  `gorm:"column:label_width"`
 	Span          uint8  `gorm:"span"`
-	Gutter        string `gorm:"gutter"`
+	Gutter        uint8  `gorm:"gutter"`
 	FormBtns      bool   `gorm:"form_btns"`
 	Disabled      bool   `gorm:"disabled"`
 	Fields        []SysField

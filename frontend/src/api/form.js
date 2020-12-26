@@ -15,3 +15,10 @@ export function formList(params) {
     params
   })
 }
+
+export function formDelete(id) {
+  return request({
+    url: '/form/' + id,
+    method: 'delete'
+  })
+}

@@ -79,6 +79,12 @@ export const constantRoutes = [
         name: '表单',
         component: () => import('@/views/admin/form/index'),
         meta: { title: '表单', icon: 'el-icon-cpu' }
+      },
+      {
+        path: 'form/:id',
+        name: '选项',
+        component: () => import('@/views/admin/form/detail'),
+        meta: { title: '选项', icon: 'el-icon-hot-water' }
       }
     ]
   },

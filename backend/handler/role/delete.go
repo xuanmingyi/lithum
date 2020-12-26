@@ -1,6 +1,12 @@
 package role
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	. "lithum/handler"
+)
 
 func Delete(c *gin.Context) {
+	fmt.Println("delete1!!!")
+	SendResponse(c, nil, nil)
 }
