@@ -24,3 +24,15 @@ data/mysql/ib_logfile1
 data/mysql/ibdata1
 data/mysql/mysql/
 data/mysql/performance_schema/
+
+
+# For logs
+data/logs/nginx/access.log
+data/logs/nginx/error.log
+data/logs/nginx/host.access.log
+
+# For frontend
+frontend.tar.gz
+data/nginx/html/favicon.ico
+data/nginx/html/index.html
+data/nginx/html/static/
