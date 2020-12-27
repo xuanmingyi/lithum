@@ -79,12 +79,10 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
           >删除</el-button>
-          <router-link :to="`/admin/form/${scope.row.id}`">
-            <el-button
-              size="mini"
-              @click="handleView(scope.$index, scope.row)"
-            >查看</el-button>
-          </router-link>
+          <el-button
+            size="mini"
+            @click="handleView(scope.$index, scope.row)"
+          >查看</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -45,9 +45,60 @@
       <el-form-item label="禁用">
         <el-switch v-model="form.Disabled" />
       </el-form-item>
+      <el-form-item label="列">
+        <el-button>更新</el-button>
+        <el-table
+          :data="form.Fields"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            fixed
+            prop="date"
+            label="日期"
+            width="150"
+          />
+          <el-table-column
+            prop="name"
+            label="姓名"
+            width="120"
+          />
+          <el-table-column
+            prop="province"
+            label="省份"
+            width="120"
+          />
+          <el-table-column
+            prop="city"
+            label="市区"
+            width="120"
+          />
+          <el-table-column
+            prop="address"
+            label="地址"
+            width="300"
+          />
+          <el-table-column
+            prop="zip"
+            label="邮编"
+            width="120"
+          />
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="handleClick(scope.row)">查看</el-button>
+              <el-button type="text" size="small">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form-item>
     </el-form>
+
     <div slot="footer">
-      <el-button @click="close">取消</el-button>
+      <el-button @click="handleCancel">取消</el-button>
       <el-button type="primary" @click="handelConfirm">确定</el-button>
     </div>
   </el-dialog>
@@ -68,7 +119,8 @@ export default {
         LabelWidth: 100,
         Span: 15,
         FormBtns: true,
-        Disabled: false
+        Disabled: false,
+        Fields: []
       },
       rules: {
         Title: [{
@@ -120,15 +172,26 @@ export default {
     }
   },
   methods: {
-    onOpen() {},
+    onOpen() {
+    },
     onClose() {
       this.$refs['createForm'].resetFields()
     },
-    open() {
+    create() {
+      console.log(this.$refs['createForm'])
+      this.visible = true
+    },
+    update() {
+      this.visible = true
+    },
+    view() {
       this.visible = true
     },
     close() {
       this.visible = false
+    },
+    handleCancel() {
+      this.close()
     },
     handelConfirm() {
       this.$refs['createForm'].validate(valid => {

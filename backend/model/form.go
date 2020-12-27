@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"lithum/pkg/constvar"
 )
 
@@ -29,7 +30,7 @@ func (form *SysForm) Update() error {
 	return DB.Self.Update(&form).Error
 }
 
-func ListForm(name string, offset int, limit int) ([]*SysForm, uint64, error) {
+func ListForm(search string, offset int, limit int) ([]*SysForm, uint64, error) {
 	if limit == 0 {
 		limit = constvar.DefaultLimit
 	}
@@ -37,12 +38,12 @@ func ListForm(name string, offset int, limit int) ([]*SysForm, uint64, error) {
 	items := make([]*SysForm, 0)
 	var count uint64
 
-	//where := fmt.Sprintf("title like '%%#{title}%%'")
-	if err := DB.Self.Model(&SysForm{}).Count(&count).Error; err != nil {
+	where := fmt.Sprintf("title like '%%%s%%'", search)
+	if err := DB.Self.Model(&SysForm{}).Where(where).Count(&count).Error; err != nil {
 		return items, count, err
 	}
 
-	if err := DB.Self.Offset(offset).Limit(limit).Order("id desc").Find(&items).Error; err != nil {
+	if err := DB.Self.Where(where).Offset(offset).Limit(limit).Order("id desc").Find(&items).Error; err != nil {
 		return items, count, err
 	}
 

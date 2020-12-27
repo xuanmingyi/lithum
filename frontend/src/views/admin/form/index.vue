@@ -72,19 +72,17 @@
           <el-button
             size="mini"
             type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click="openUpdateDialog(scope.$index, scope.row)"
           >编辑</el-button>
           <el-button
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
           >删除</el-button>
-          <router-link :to="`/admin/form/${scope.row.id}`">
-            <el-button
-              size="mini"
-              @click="handleView(scope.$index, scope.row)"
-            >查看</el-button>
-          </router-link>
+          <el-button
+            size="mini"
+            @click="openViewDialog(scope.$index, scope.row)"
+          >查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -142,7 +140,13 @@ export default {
   },
   methods: {
     openCreateDialog() {
-      this.$refs['dialog'].open()
+      this.$refs['dialog'].create()
+    },
+    openUpdateDialog(index, row) {
+      this.$refs['dialog'].update()
+    },
+    openViewDialog(index, row) {
+      this.$refs['dialog'].view()
     },
     fetchData() {
       this.listLoading = true
@@ -169,9 +173,7 @@ export default {
       this.fetchData()
     },
     handleEdit(index, row) {
-      this.updateDialog.username = row.username
-      this.updateDialog.nickname = row.nickname
-      this.updateDialog.visible = true
+      console.log(row)
     },
     handleView(index, row) {
       console.log(row)
