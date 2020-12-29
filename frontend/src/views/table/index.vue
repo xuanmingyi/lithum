@@ -1,37 +1,41 @@
 <template>
-  <div class="app-container">
-    <el-button v-on:click="openDialog()">创建</el-button>
-    <MyForm @hidden="hideDialog" :form="form"></MyForm>
-  </div>
+  <div class="app-container" />
 </template>
 
 <script>
-import { default as MyForm } from '../../components/MyForm'
-import { form_user } from '@/api/form'
+import { loadComponent } from '@/utils/vue-loader'
+import { formList, formDelete } from '@/api/form'
 
 export default {
-  components: {
-    'MyForm': MyForm
-  },
-  data() {
-    return {
-      form: {},
-      list: null,
-      listLoading: true
-    }
-  },
   created() {
-    form_user().then(response => {
-      this.form = JSON.parse(response.data)
-    })
-  },
-  methods: {
-    hideDialog() {
-      this.show = false
-    },
-    openDialog() {
-      this.show = true
+    const mixin = {
+      methods: {
+        fetchItems() {
+          // 获取数据
+          const req = {
+            search: this.search,
+            page: this.page,
+            limit: this.limit
+          }
+          return formList(req)
+        },
+        createItem() {
+          // 创建数据
+          this.list.push({
+            date: 'ssss',
+            name: 'sss',
+            address: 'sssss'
+          })
+        },
+        deleteItem(row) {
+          // 删除数据
+          return formDelete(row.id)
+        }
+      }
     }
+    import('@/components/LTable').then(cmp => {
+      loadComponent.call(this, cmp, mixin, '.app-container')
+    })
   }
 }
 </script>
