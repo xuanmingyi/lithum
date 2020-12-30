@@ -39,14 +39,11 @@
       >
         <template slot-scope="scope">
           <el-button
+            v-for="action in meta.table.row_actions"
+            :key="action.name"
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+            @click="handleRowAction(action, scope.$index, scope.row)"
+          >{{ action.display }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,12 +102,9 @@ export default {
     },
     delete() {
     },
-    handlePageSizeChange() {},
-    handlePageCurrentChange() {},
-    handleTableAction(action) {
-      import('@/components/LDialog').then(cmp => {
-        loadComponent.call(this, cmp, {}, '.table')
-      })
+    handlePageSizeChange() {
+    },
+    handlePageCurrentChange() {
     },
     getColumnLabel(name) {
       for (let i = 0; i < this.meta.model.attributes.length; i++) {
@@ -127,9 +121,31 @@ export default {
         return row[name]
       }
     },
-    handleRowAction(action) {
-      console.log(action)
+    handleTableAction(action) {
+      if (action.type === 'dialog') {
+        const mixin = {
+          data: function() {
+            return {}
+          }
+        }
+        import('@/components/LDialog').then(cmp => {
+          loadComponent.call(this, cmp, mixin, '.table')
+        })
+      }
     },
+    handleRowAction(action, index, row) {
+      if (action.type === 'dialog') {
+        const mixin = {
+          data: function() {
+            return {}
+          }
+        }
+        import('@/components/LDialog').then(cmp => {
+          loadComponent.call(this, cmp, mixin, '.table')
+        })
+      }
+    },
+
     handleEdit(index, row) {
       import('@/components/LDialog').then(cmp => {
         loadComponent.call(this, cmp, {}, document.querySelector('.table'))

@@ -25,6 +25,7 @@ table:
   row_actions:
     - name: edit
       display: 编辑
+
       type: dialog
       dialog:
         title: 创建实例
