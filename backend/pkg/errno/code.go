@@ -15,4 +15,9 @@ var (
 	ErrUserNotFound      = &Errno{Code: 20102, Message: "The user was not found."}
 	ErrTokenInvalid      = &Errno{Code: 20103, Message: "The token was invalid."}
 	ErrPasswordIncorrect = &Errno{Code: 20104, Message: "The password was incorrect."}
+
+	// meta errors
+	ErrMetaNotFound = &Errno{Code: 20201, Message: "Meta file not found."}
+	ErrMetaRead     = &Errno{Code: 20202, Message: "Meta file read error."}
+	ErrMetaYaml     = &Errno{Code: 20203, Message: "Unmarshal yaml error."}
 )

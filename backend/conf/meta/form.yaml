@@ -1,0 +1,38 @@
+model:
+  name: form
+  attributes:
+    - name: id
+      display: ID
+    - name: title
+      display: Title
+    - name: size
+      display: 大小
+
+table:
+  columns:
+    - name: id
+    - name: title
+    - name: size
+  actions:
+    - name: create
+      display: 创建
+      type: dialog
+      dialog:
+        title: 创建实例
+        fields:
+          - name: title
+          - name: size
+  row_actions:
+    - name: edit
+      display: 编辑
+      type: dialog
+      dialog:
+        title: 创建实例
+        fields:
+          - name: title
+          - name: size
+    - name: delete
+      display: 删除
+      type: message
+    - name: view
+      display: 查看

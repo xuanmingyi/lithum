@@ -6,7 +6,13 @@
         <el-input v-model="search" size="mini" placeholder="输入关键字搜索" @keyup.enter.native="fetch" />
       </div>
       <div class="table-actions">
-        <el-button type="primary" size="mini" @click="handleCreate">创建</el-button>
+        <el-button
+          v-for="action in meta.table.actions"
+          :key="action.name"
+          type="primary"
+          size="mini"
+          @click="handleTableAction(action)"
+        >{{ action.display }}</el-button>
       </div>
     </div>
 
@@ -17,15 +23,19 @@
       class="table"
     >
       <el-table-column
-        label="Date"
-        prop="date"
-      />
+        v-for="column in meta.table.columns"
+        :key="column.name"
+        :label="getColumnLabel(column.name)"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ getColumnValue(scope.row, column.name) }}
+        </template>
+      </el-table-column>
+
       <el-table-column
-        label="Name"
-        prop="name"
-      />
-      <el-table-column
-        align="right"
+        align="center"
+        label="操作"
       >
         <template slot-scope="scope">
           <el-button
@@ -97,10 +107,28 @@ export default {
     },
     handlePageSizeChange() {},
     handlePageCurrentChange() {},
-    handleCreate() {
+    handleTableAction(action) {
       import('@/components/LDialog').then(cmp => {
-        loadComponent.call(this, cmp, {}, document.querySelector('.table'))
+        loadComponent.call(this, cmp, {}, '.table')
       })
+    },
+    getColumnLabel(name) {
+      for (let i = 0; i < this.meta.model.attributes.length; i++) {
+        if (this.meta.model.attributes[i].name === name) {
+          return this.meta.model.attributes[i].display
+        }
+      }
+    },
+    getColumnValue(row, name) {
+      const func_name = 'getColumnValue' + name
+      if (func_name in this) {
+        return this[func_name](row)
+      } else {
+        return row[name]
+      }
+    },
+    handleRowAction(action) {
+      console.log(action)
     },
     handleEdit(index, row) {
       import('@/components/LDialog').then(cmp => {

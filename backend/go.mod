@@ -23,4 +23,5 @@ require (
 	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	gopkg.in/go-playground/validator.v9 v9.31.0
+	gopkg.in/yaml.v2 v2.3.0
 )
