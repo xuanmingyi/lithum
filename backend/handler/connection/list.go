@@ -1,12 +1,12 @@
-package form
+package connection
 
 import (
 	"github.com/gin-gonic/gin"
 	. "lithum/handler"
-	. "lithum/model/request/form"
-	. "lithum/model/response/form"
+	"lithum/model"
+	. "lithum/model/request/connection"
+	. "lithum/model/response/connection"
 	"lithum/pkg/errno"
-	"lithum/service"
 )
 
 func List(c *gin.Context) {
@@ -17,12 +17,11 @@ func List(c *gin.Context) {
 	}
 
 	offset := (r.Page - 1) * r.Limit
-	items, count, err := service.ListForm(r.Search, offset, r.Limit)
+	items, count, err := model.ListConnection(r.Search, offset, r.Limit)
 	if err != nil {
 		SendResponse(c, errno.ErrDatabase, nil)
 		return
 	}
-
 	SendResponse(c, nil, ListResponse{
 		Count: count,
 		Items: items,

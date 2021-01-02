@@ -1,6 +1,7 @@
 package router
 
 import (
+	"lithum/handler/connection"
 	"lithum/handler/field"
 	"lithum/handler/form"
 	"lithum/handler/meta"
@@ -45,6 +46,13 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	g.GET("/v1/me", user.Me, middleware.AuthMiddleware())
 
 	g.GET("/v1/meta/:name", meta.Get)
+
+	connGroup := g.Group("/v1/connection")
+	connGroup.Use(middleware.AuthMiddleware())
+	{
+		connGroup.GET("", connection.List)
+		connGroup.PUT("", connection.Create)
+	}
 
 	fieldGroup := g.Group("/v1/field")
 	fieldGroup.Use(middleware.AuthMiddleware())

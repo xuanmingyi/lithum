@@ -4,12 +4,12 @@
 
 <script>
 import { loadComponent } from '@/utils/vue-loader'
-import { formList, formDelete } from '@/api/form'
 import { metaGet } from '@/api/meta'
+import { connectionList, connectionCreate, connectionDelete } from '@/api/connection'
 
 export default {
   created() {
-    metaGet('form').then(response => {
+    metaGet('connection').then(response => {
       const mixin = {
         data: function() {
           return {
@@ -24,14 +24,17 @@ export default {
               page: this.page,
               limit: this.limit
             }
-            return formList(req)
+            return connectionList(req)
           },
-          createItem() {
+          createItem(fields) {
             // 创建数据
+            console.log(fields)
+            const req = {}
+            return connectionCreate(req)
           },
           deleteItem(row) {
-            // 删除数据
-            return formDelete(row.id)
+            const req = {}
+            return connectionDelete(req)
           }
         }
       }

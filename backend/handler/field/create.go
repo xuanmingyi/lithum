@@ -26,6 +26,7 @@ func Create(c *gin.Context) {
 
 	if err := f.Create(); err != nil {
 		handler.SendResponse(c, errno.ErrDatabase, nil)
+		return
 	}
 	handler.SendResponse(c, nil, nil)
 }

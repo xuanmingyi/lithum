@@ -1,6 +1,8 @@
 <template>
-  <div>
-
+  <div
+    class="table"
+    @createItem="create"
+  >
     <div class="table-header">
       <div class="table-search">
         <el-input v-model="search" size="mini" placeholder="输入关键字搜索" @keyup.enter.native="fetch" />
@@ -20,7 +22,6 @@
       :data="list"
       style="width: 100%"
       border
-      class="table"
     >
       <el-table-column
         v-for="column in meta.table.columns"
@@ -61,7 +62,7 @@
 </template>
 
 <script>
-import { loadComponent } from '@/utils/vue-loader'
+import { loadComponent, initMeta } from '@/utils/vue-loader'
 
 export default {
   name: 'LTable',
@@ -85,6 +86,9 @@ export default {
     }
   },
   created() {
+    // init meta
+    initMeta(this.meta)
+    console.log(this.meta)
     this.fetch()
   },
   methods: {
@@ -99,6 +103,8 @@ export default {
       })
     },
     create() {
+      console.log('create hahahaha ')
+      console.log(this)
     },
     delete() {
     },
@@ -107,6 +113,7 @@ export default {
     handlePageCurrentChange() {
     },
     getColumnLabel(name) {
+      // 获取table的标题
       for (let i = 0; i < this.meta.model.attributes.length; i++) {
         if (this.meta.model.attributes[i].name === name) {
           return this.meta.model.attributes[i].display
@@ -114,6 +121,7 @@ export default {
       }
     },
     getColumnValue(row, name) {
+      // 获取table中的数据内容，相当于filter
       const func_name = 'getColumnValue' + name
       if (func_name in this) {
         return this[func_name](row)
@@ -123,9 +131,13 @@ export default {
     },
     handleTableAction(action) {
       if (action.type === 'dialog') {
+        const meta = this.meta
         const mixin = {
           data: function() {
-            return {}
+            return {
+              meta: meta,
+              action: action
+            }
           }
         }
         import('@/components/LDialog').then(cmp => {
@@ -137,7 +149,12 @@ export default {
       if (action.type === 'dialog') {
         const mixin = {
           data: function() {
-            return {}
+            return {
+              meta: this.meta,
+              action: action,
+              index: index,
+              row: row
+            }
           }
         }
         import('@/components/LDialog').then(cmp => {
@@ -145,7 +162,6 @@ export default {
         })
       }
     },
-
     handleEdit(index, row) {
       import('@/components/LDialog').then(cmp => {
         loadComponent.call(this, cmp, {}, document.querySelector('.table'))

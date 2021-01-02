@@ -1,0 +1,38 @@
+model:
+  name: connection
+  attributes:
+    - name: id
+      display: ID
+    - name: name
+      display: 名字
+      tag: el-input
+    - name: display
+      display: 展示
+      tag: el-input
+    - name: config
+      display: 配置
+      tag: el-area
+
+table:
+  columns:
+    - name: id
+    - name: name
+    - name: display
+    - name: config
+  actions:
+    - name: create
+      display: 创建
+      type: dialog
+      dialog:
+        title: 创建连接
+        fields:
+          - name: name
+          - name: display
+          - name: config
+  row_actions:
+    - name: edit
+      display: 编辑
+    - name: delete
+      display: 删除
+    - name: view
+      display: 查看

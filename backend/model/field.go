@@ -25,7 +25,7 @@ func DeleteField(id uint64) error {
 }
 
 func (field *SysField) Update() error {
-	return DB.Self.Delete(&field).Error
+	return DB.Self.Update(&field).Error
 }
 
 func ListField(search string, offset int, limit int) ([]*SysField, uint64, error) {
