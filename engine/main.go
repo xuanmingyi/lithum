@@ -6,6 +6,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"sync"
+
+	mysql "github.com/tengattack/gluasql/mysql"
 )
 
 type Task struct {
@@ -22,6 +24,7 @@ func RunPipeline(task Task, group *sync.WaitGroup) {
 	fmt.Println(path)
 
 	L := lua.NewState()
+	L.PreloadModule("mysql", mysql.Loader)
 	defer L.Close()
 
 	if err := L.DoString(`print("hello world")`); err != nil {
