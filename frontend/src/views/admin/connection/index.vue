@@ -3,9 +3,9 @@
 </template>
 
 <script>
+import { connectionList, connectionCreate, connectionDelete, connectionUpdate } from '@/api/connection'
 import { loadComponent } from '@/utils/vue-loader'
 import { metaGet } from '@/api/meta'
-import { connectionList, connectionCreate, connectionDelete } from '@/api/connection'
 
 export default {
   created() {
@@ -17,6 +17,22 @@ export default {
           }
         },
         methods: {
+          createItem(fields) {
+            console.log(fields)
+            // 创建数据
+            const req = {}
+            return connectionCreate(req)
+          },
+          deleteItem(row) {
+            // 删除数据
+            const req = {}
+            return connectionDelete(req)
+          },
+          updateItem(row) {
+            // 修改数据
+            const req = {}
+            return connectionUpdate(req)
+          },
           fetchItems() {
             // 获取数据
             const req = {
@@ -25,16 +41,6 @@ export default {
               limit: this.limit
             }
             return connectionList(req)
-          },
-          createItem(fields) {
-            // 创建数据
-            console.log(fields)
-            const req = {}
-            return connectionCreate(req)
-          },
-          deleteItem(row) {
-            const req = {}
-            return connectionDelete(req)
           }
         }
       }

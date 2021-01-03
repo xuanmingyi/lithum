@@ -1,7 +1,6 @@
 <template>
   <div
     class="table"
-    @createItem="create"
   >
     <div class="table-header">
       <div class="table-search">
@@ -43,6 +42,7 @@
             v-for="action in meta.table.row_actions"
             :key="action.name"
             size="mini"
+            :type="computedType(action)"
             @click="handleRowAction(action, scope.$index, scope.row)"
           >{{ action.display }}</el-button>
         </template>
@@ -88,10 +88,27 @@ export default {
   created() {
     // init meta
     initMeta(this.meta)
-    console.log(this.meta)
+
+    this.$bus.on('create', this.create)
+    this.$bus.on('delete', this.delete)
+    this.$bus.on('update', this.update)
+
     this.fetch()
   },
+  beforeDestroy() {
+    this.$bus.off('create')
+    this.$bus.off('delete')
+    this.$bus.off('update')
+  },
   methods: {
+    create(obj) {
+      // console.log('create hahahaha ')
+      // console.log(this)
+    },
+    delete(id) {
+    },
+    update(obj) {
+    },
     fetch() {
       this.listLoading = true
       this.fetchItems().then(response => {
@@ -101,12 +118,6 @@ export default {
       }).catch(reason => {
         console.log(reason)
       })
-    },
-    create() {
-      console.log('create hahahaha ')
-      console.log(this)
-    },
-    delete() {
     },
     handlePageSizeChange() {
     },
@@ -132,11 +143,17 @@ export default {
     handleTableAction(action) {
       if (action.type === 'dialog') {
         const meta = this.meta
+        const fetchItems = this.fetchItems
+        const createItem = this.createItem
+        const deleteItem = this.deleteItem
         const mixin = {
           data: function() {
             return {
               meta: meta,
-              action: action
+              action: action,
+              fetchItems: fetchItems,
+              createItem: createItem,
+              deleteItem: deleteItem
             }
           }
         }
@@ -153,44 +170,48 @@ export default {
               meta: this.meta,
               action: action,
               index: index,
-              row: row
+              row: row,
+              fetchItems: this.fetchItems,
+              createItem: this.createItem,
+              deleteItem: this.deleteItem
             }
           }
         }
         import('@/components/LDialog').then(cmp => {
           loadComponent.call(this, cmp, mixin, '.table')
         })
-      }
-    },
-    handleEdit(index, row) {
-      import('@/components/LDialog').then(cmp => {
-        loadComponent.call(this, cmp, {}, document.querySelector('.table'))
-      })
-    },
-    handleDelete(index, row) {
-      this.$confirm('是否继续删除操作?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteItem(row).then(response => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+      } else if (action.type === 'confirm') {
+        this.$confirm(action.confirm.message, action.confirm.title, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this[action.func](row).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.fetch()
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '删除失败!'
+            })
           })
-          this.fetch()
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '删除失败!'
+            message: '已取消删除'
           })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
+      }
+    },
+    computedType(action) {
+      if (action.name === 'delete') {
+        return 'danger'
+      } else {
+        return ''
+      }
     }
   }
 }

@@ -3,15 +3,19 @@ model:
   attributes:
     - name: id
       display: ID
+      default: -1
     - name: name
       display: 名字
       tag: el-input
+      default: ''
     - name: display
       display: 展示
       tag: el-input
+      default: ''
     - name: config
       display: 配置
       tag: el-area
+      default: '{}'
 
 table:
   columns:
@@ -22,6 +26,7 @@ table:
   actions:
     - name: create
       display: 创建
+      func: createItem
       type: dialog
       dialog:
         title: 创建连接
@@ -34,5 +39,10 @@ table:
       display: 编辑
     - name: delete
       display: 删除
+      func: deleteItem
+      type: confirm
+      confirm:
+        title: '提示'
+        message: '是否继续删除操作?'
     - name: view
       display: 查看

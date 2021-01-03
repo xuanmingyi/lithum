@@ -8,6 +8,7 @@ type Option struct {
 type Attribute struct {
 	Name    string   `yaml:"name" json:"name"`
 	Display string   `yaml:"display" json:"display"`
+	Default string   `yaml:"default" json:"default"`
 	Tag     string   `yaml:"tag" json:"tag"`
 	Options []Option `yaml:"options" json:"options"`
 }
@@ -30,11 +31,18 @@ type Dialog struct {
 	Fields []Field `yaml:"fields" json:"fields"`
 }
 
+type Confirm struct {
+	Title   string `yaml:"title" json:"title"`
+	Message string `yaml:"message" json:"message"`
+}
+
 type Action struct {
-	Name    string `yaml:"name" json:"name"`
-	Display string `yaml:"display" json:"display"`
-	Type    string `yaml:"type" json:"type"`
-	Dialog  Dialog `yaml:"dialog" json:"dialog"`
+	Name    string  `yaml:"name" json:"name"`
+	Display string  `yaml:"display" json:"display"`
+	Func    string  `yaml:"func" json:"func"`
+	Type    string  `yaml:"type" json:"type"`
+	Dialog  Dialog  `yaml:"dialog" json:"dialog"`
+	Confirm Confirm `yaml:"confirm" json:"confirm"`
 }
 
 type Table struct {

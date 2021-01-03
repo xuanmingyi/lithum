@@ -2,18 +2,19 @@
   <!--https://stackoverflow.com/questions/50687897/computed-function-being-called-twice-in-vuejs-app/50688053-->
   <el-dialog id="dialog-1" :visible="true" :title="action.dialog.title">
     <el-form
+      :model="form"
       size="medium"
       label-position="left"
       label-width="80px"
     >
       <el-form-item v-for="field in action.dialog.fields" :key="field.name" :label="field.display">
-        <el-input v-if="field.tag === 'el-input'" v-model="field.value" :required="field.required" :disabled="field.disabled" />
+        <el-input v-if="field.tag === 'el-input'" v-model="form[field.name]" :required="field.required" :disabled="field.disabled" />
 
-        <el-input v-if="field.tag === 'el-area'" v-model="field.value" type="textarea" :required="field.required" :disabled="field.disabled" />
+        <el-input v-if="field.tag === 'el-area'" v-model="form[field.name]" type="textarea" :required="field.required" :disabled="field.disabled" />
 
         <el-input-number v-else-if="field.tag === 'el-input-number'" />
 
-        <el-select v-else-if="field.tag === 'el-select'" v-model="field.value">
+        <el-select v-else-if="field.tag === 'el-select'" v-model="form[field.name]">
           <el-option
             v-for="option in field.options"
             :key="option.value"
@@ -22,7 +23,7 @@
           />
         </el-select>
 
-        <el-checkbox-group v-else-if="field.tag === 'el-checkbox-group'" v-model="checkboxvalue">
+        <el-checkbox-group v-else-if="field.tag === 'el-checkbox-group'" v-model="form[field.name]">
           <el-checkbox
             v-for="option in field.options"
             :key="option.value"
@@ -30,7 +31,7 @@
           />
         </el-checkbox-group>
 
-        <el-radio-group v-else-if="field.tag === 'el-radio-group'" v-model="field.value">
+        <el-radio-group v-else-if="field.tag === 'el-radio-group'" v-model="form[field.name]">
           <el-radio
             v-for="option in field.options"
             :key="option.value"
@@ -39,9 +40,9 @@
           />
         </el-radio-group>
 
-        <el-slider v-else-if="field.tag === 'el-slider'" v-model="field.value" />
+        <el-slider v-else-if="field.tag === 'el-slider'" v-model="form[field.name]" />
 
-        <el-switch v-else-if="field.tag === 'el-switch'" v-model="field.value" />
+        <el-switch v-else-if="field.tag === 'el-switch'" v-model="form[field.name]" />
 
         <el-upload v-else-if="field.tag === 'el-upload'" action="https://jsonplaceholder.typicode.com/posts/" />
       </el-form-item>
@@ -58,21 +59,15 @@
   data: function() {
     return {
       visible: true,
-      list: [],
-      checkboxvalue: []
+      form: {}
     }
   },
-  computed: {
-    formData: function() {
-      const mm = {}
-      console.log(this.action)
-      for (let i = 0; i < this.action.dialog.fields.length; i++) {
-        const field = this.action.dialog.fields[i]
-        console.log(field)
-        mm[field.name] = 1111
-      }
-      return mm
+  created() {
+    for (let i = 0; i < this.action.dialog.fields.length; i++) {
+      const field = this.action.dialog.fields[i]
+      this.form[field.name] = field.default
     }
+    console.log(this.form)
   },
   methods: {
     close() {
@@ -80,7 +75,8 @@
       document.querySelector('.v-modal').remove()
     },
     handleConfirm() {
-      this.$emit('createItem')
+      console.log(this.form)
+      this.$bus.emit('create', this.form)
     }
   }
 }

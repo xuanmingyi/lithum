@@ -22,3 +22,10 @@ export function connectionDelete(id) {
     method: 'delete'
   })
 }
+
+export function connectionUpdate(data) {
+  return request({
+    url: '/connection',
+    method: 'put'
+  })
+}
