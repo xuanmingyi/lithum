@@ -1,0 +1,4 @@
+- name: test1
+  path: pipelines/test1
+- name: test2
+  path: pipelines/test2
