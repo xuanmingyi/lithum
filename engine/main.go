@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"engine/libs"
 	lua "github.com/yuin/gopher-lua"
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -24,10 +25,12 @@ func RunPipeline(task Task, group *sync.WaitGroup) {
 	fmt.Println(path)
 
 	L := lua.NewState()
+	libs.Preload(L)
+
 	L.PreloadModule("mysql", mysql.Loader)
 	defer L.Close()
 
-	if err := L.DoString(`print("hello world")`); err != nil {
+	if err := L.DoFile(path); err != nil {
 		panic(err)
 	}
 }
