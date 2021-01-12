@@ -125,7 +125,9 @@ github.com/tengattack/gluasql v0.0.0-20181229041402-2e5ed630c4cf/go.mod h1:m4UsF
 github.com/vadv/gopher-lua-libs v0.1.1 h1:eLHlTK9iILWq/7nCN4Qkz0/IQxf3PTYfmJj7pFAu4tM=
 github.com/vadv/gopher-lua-libs v0.1.1/go.mod h1:Mv5mlDfz7K7QAU1SANxGZcHjsLeU+k4Ll98//WfEGNI=
 github.com/xuanmingyi/lithum v0.0.0-20210103225026-3b6c9d4c06eb h1:2PKlDOxALptZG2FnyLO+4whzSgiT4gz/Y2o4BDkgqo8=
+github.com/xuanmingyi/lithum v0.0.0-20210105142820-ef06faab31f6 h1:Sn4Du1E3MLt8LVBlV9Zpu9Qq/JoyygW2+qqC8Q2JT9U=
 github.com/xuanmingyi/lithum/engine v0.0.0-20210103225026-3b6c9d4c06eb h1:nBc75+cxOIH449amMBXTg0TEoq0MfWva864FJV8RBjM=
+github.com/xuanmingyi/lithum/engine v0.0.0-20210105142820-ef06faab31f6 h1:f7aeeBdECmaOUrG3v0z0CI9G9O6wWRpnDn3XLsMrxck=
 github.com/yhat/scrape v0.0.0-20161128144610-24b7890b0945 h1:6Ju8pZBYFTN9FaV/JvNBiIHcsgEmP4z4laciqjfjY8E=
 github.com/yhat/scrape v0.0.0-20161128144610-24b7890b0945/go.mod h1:4vRFPPNYllgCacoj+0FoKOjTW68rUhEfqPLiEJaK2w8=
 github.com/yuin/gluamapper v0.0.0-20150323120927-d836955830e7 h1:noHsffKZsNfU38DwcXWEPldrTjIZ8FPNKx8mYMGnqjs=
