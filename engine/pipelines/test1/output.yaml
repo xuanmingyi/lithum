@@ -1,0 +1,2 @@
+- driver: kafka
+  url: "http://www.baidu.com"

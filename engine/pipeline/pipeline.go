@@ -64,6 +64,7 @@ func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
 		panic(err)
 	}
 	pipeline.FilterRaw = string(content)
+	pipeline.Filter.Code = pipeline.FilterRaw
 
 	content, err = ioutil.ReadFile(path.Join(p.Path, "output.lua"))
 	if err != nil {
