@@ -1,18 +1,17 @@
 package pipeline
 
 import (
+	"context"
 	"engine/config"
-	"fmt"
-	lua "github.com/yuin/gopher-lua"
+	inputexec "engine/input/exec"
+	inputhttp "engine/input/http"
+	"engine/models"
 	"io/ioutil"
 	"path"
 	"sync"
-)
 
-type Message struct {
-	L    *lua.LState
-	Body string
-}
+	"gopkg.in/yaml.v2"
+)
 
 type Pipeline struct {
 	Name       string
@@ -22,8 +21,8 @@ type Pipeline struct {
 	Inputs     []Input
 	Filter     Filter
 	Outputs    []Output
-	InputChan  chan Message
-	OutputChan chan Message
+	InputChan  chan models.Message
+	OutputChan chan models.Message
 	wg         sync.WaitGroup
 }
 
@@ -33,10 +32,8 @@ func (p *Pipeline) Start() {
 		go input.Start(p.InputChan)
 	}
 
-	if p.Filter != nil {
-		p.wg.Add(1)
-		go p.Filter.Start(p.InputChan, p.OutputChan)
-	}
+	p.wg.Add(1)
+	go p.Filter.Start(p.InputChan, p.OutputChan)
 
 	for _, output := range p.Outputs {
 		p.wg.Add(1)
@@ -51,9 +48,12 @@ func (p *Pipeline) Wait() {
 func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
 	pipeline = new(Pipeline)
 
+	pipeline.InputChan = make(chan models.Message, 1000)
+	pipeline.OutputChan = make(chan models.Message, 1000)
+
 	pipeline.Name = p.Name
 
-	content, err := ioutil.ReadFile(path.Join(p.Path, "input.lua"))
+	content, err := ioutil.ReadFile(path.Join(p.Path, "input.yaml"))
 	if err != nil {
 		panic(err)
 	}
@@ -71,19 +71,22 @@ func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
 	}
 	pipeline.OutputRaw = string(content)
 
-	L := lua.NewState()
-	defer L.Close()
-	err = L.DoString(pipeline.InputRaw)
+	var inputConfigs []map[string]string
+	err = yaml.Unmarshal([]byte(pipeline.InputRaw), &inputConfigs)
 	if err != nil {
 		panic(err)
 	}
-	inputResult := L.GetGlobal("input").(*lua.LTable)
 
-	fmt.Println(inputResult.RawGetString("driver").String())
-
-	//	inputResult.ForEach(func(value lua.LValue, value2 lua.LValue) {
-	//		fmt.Println(value, value2)
-	//	})
+	for _, inputConfig := range inputConfigs {
+		switch inputConfig["driver"] {
+		case "http":
+			input, _ := inputhttp.InitHandler(context.Background(), inputConfig)
+			pipeline.Inputs = append(pipeline.Inputs, input)
+		case "exec":
+			input, _ := inputexec.InitHandler(context.Background(), inputConfig)
+			pipeline.Inputs = append(pipeline.Inputs, input)
+		}
+	}
 
 	return pipeline, nil
 }

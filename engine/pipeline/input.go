@@ -1,5 +1,7 @@
 package pipeline
 
+import "engine/models"
+
 type Input interface {
-	Start(chan Message)
+	Start(chan models.Message)
 }

@@ -1,0 +1,6 @@
+- driver: exec
+  interval: 1
+  cmd: ls -al
+#- driver: http
+#  interval: 30
+#  url: https://flsfls.net/category/znfls

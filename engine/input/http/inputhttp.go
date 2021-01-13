@@ -2,7 +2,10 @@ package inputhttp
 
 import (
 	"context"
-	"fmt"
+	"engine/models"
+	"io/ioutil"
+	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -10,18 +13,24 @@ const ModuleName = "http"
 
 const ErrorTag = "engine_input_http_error"
 
-type InputConfig struct {
-	Interval int `json:"interval"`
+type InputHttp struct {
+	Ctx      context.Context
+	Interval int    `yaml:"interval"`
+	URL      string `yaml:"url"`
 }
 
-func DefaultInputConfig() InputConfig {
-	return InputConfig{}
+func InitHandler(ctx context.Context, values map[string]string) (input *InputHttp, err error) {
+	input = new(InputHttp)
+	input.Ctx = ctx
+	input.Interval, err = strconv.Atoi(values["interval"])
+	if err != nil {
+		return nil, err
+	}
+	input.URL = values["url"]
+	return input, nil
 }
 
-func InitHandler(ctx context.Context) {
-}
-
-func (t *InputConfig) Start(ctx context.Context) (err error) {
+func (t *InputHttp) Start(msg chan models.Message) {
 	startChan := make(chan bool, 1)
 	ticker := time.NewTicker(time.Duration(t.Interval) * time.Second)
 	defer ticker.Stop()
@@ -30,22 +39,24 @@ func (t *InputConfig) Start(ctx context.Context) (err error) {
 
 	for {
 		select {
-		case <-ctx.Done():
-			return nil
 		case <-startChan:
-			t.Request(ctx)
+			msg <- t.Request()
 		case <-ticker.C:
-			t.Request(ctx)
+			msg <- t.Request()
 		}
 	}
 }
 
-func (t *InputConfig) Request(ctx context.Context) {
-	data, err := t.SendRequest()
-	fmt.Println(data)
-	fmt.Println(err)
-}
-
-func (t *InputConfig) SendRequest() (data []byte, err error) {
-	return nil, nil
+func (t *InputHttp) Request() (message models.Message) {
+	resp, err := http.Get(t.URL)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	message.Body = string(body)
+	return message
 }

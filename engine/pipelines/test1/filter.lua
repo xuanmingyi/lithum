@@ -1,1 +1,1 @@
-result=message
+print(message)

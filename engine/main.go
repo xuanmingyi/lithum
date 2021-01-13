@@ -3,7 +3,6 @@ package main
 import (
 	"engine/config"
 	"engine/pipeline"
-	"time"
 )
 
 func main() {
@@ -24,5 +23,6 @@ func main() {
 		p.Wait()
 	}
 
-	time.Sleep(10 * time.Second)
+	for {
+	}
 }
