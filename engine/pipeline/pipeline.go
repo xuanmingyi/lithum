@@ -66,7 +66,7 @@ func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
 	pipeline.FilterRaw = string(content)
 	pipeline.Filter.Code = pipeline.FilterRaw
 
-	content, err = ioutil.ReadFile(path.Join(p.Path, "output.lua"))
+	content, err = ioutil.ReadFile(path.Join(p.Path, "output.yaml"))
 	if err != nil {
 		panic(err)
 	}

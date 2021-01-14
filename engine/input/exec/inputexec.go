@@ -3,7 +3,6 @@ package inputexec
 import (
 	"context"
 	"engine/models"
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -36,10 +35,7 @@ func (t *InputExec) Start(msg chan models.Message) {
 	for {
 		select {
 		case <-startChan:
-			fmt.Println(1111111)
-			mm := t.Exec()
-			msg <- mm
-			fmt.Println(2222222)
+			msg <- t.Exec()
 		case <-ticker.C:
 			msg <- t.Exec()
 		}
@@ -48,6 +44,5 @@ func (t *InputExec) Start(msg chan models.Message) {
 
 func (t *InputExec) Exec() (message models.Message) {
 	message.Body = "sssssssssssss"
-	fmt.Println(33333333333333)
 	return message
 }
