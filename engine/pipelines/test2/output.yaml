@@ -1,5 +1,5 @@
 - driver: mysql
   url: root:123456@localhost/db
-  table: ips
-  fields:
-    - ip: ip
+  mappings:
+    - ss: mm
+    - www: kkk

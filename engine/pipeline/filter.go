@@ -2,6 +2,8 @@ package pipeline
 
 import (
 	"engine/models"
+	"fmt"
+	libs "github.com/vadv/gopher-lua-libs"
 
 	lua "github.com/yuin/gopher-lua"
 )
@@ -10,17 +12,23 @@ type Filter struct {
 	Code string
 }
 
-func (f *Filter) Start(i chan models.Message, o chan models.Message) {
-	var m models.Message
+func (f *Filter) Start(input chan models.Message, output chan models.Message) {
+	var msg models.Message
 
 	for {
-		m = <-i
-		m.L = lua.NewState()
-		m.L.SetGlobal("message", lua.LString(m.Body))
-		err := m.L.DoString(f.Code)
-		if err != nil {
-			panic(err)
+		msg = <-input
+		if len(msg.Tags) == 0 {
+			L := lua.NewState()
+			libs.Preload(L)
+			L.SetGlobal("message", lua.LString(msg.Body))
+			err := L.DoString(f.Code)
+			if err != nil {
+				panic(err)
+			}
+			msg.Output = L.GetGlobal("output").String()
+			output <- msg
+		} else {
+			fmt.Println(msg)
 		}
-		o <- m
 	}
 }

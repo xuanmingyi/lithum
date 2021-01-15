@@ -1,6 +1,7 @@
 - driver: exec
-  interval: 1
-  cmd: ls -al
+  interval: 30
+  cmd: ipconfig
+
 #- driver: http
 #  interval: 30
-#  url: https://flsfls.net/category/znfls
+#  url: https://flsfls.net/category/znflss

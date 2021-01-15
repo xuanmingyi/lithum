@@ -3,6 +3,7 @@ package inputexec
 import (
 	"context"
 	"engine/models"
+	"os/exec"
 	"strconv"
 	"time"
 )
@@ -22,7 +23,7 @@ func InitHandler(ctx context.Context, values map[string]string) (input *InputExe
 	input.Ctx = ctx
 	input.Interval, err = strconv.Atoi(values["interval"])
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	input.Cmd = values["cmd"]
 	return input, nil
@@ -32,8 +33,11 @@ func (t *InputExec) Start(msg chan models.Message) {
 	startChan := make(chan bool, 1)
 	ticker := time.NewTicker(time.Duration(t.Interval) * time.Second)
 	startChan <- true
+
 	for {
 		select {
+		case <-t.Ctx.Done():
+			return
 		case <-startChan:
 			msg <- t.Exec()
 		case <-ticker.C:
@@ -43,6 +47,13 @@ func (t *InputExec) Start(msg chan models.Message) {
 }
 
 func (t *InputExec) Exec() (message models.Message) {
-	message.Body = "sssssssssssss"
+	cmd := exec.Command(t.Cmd)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		message.Body = ""
+		message.Tags = append(message.Tags, ErrorTag)
+	} else {
+		message.Body = string(out)
+	}
 	return message
 }

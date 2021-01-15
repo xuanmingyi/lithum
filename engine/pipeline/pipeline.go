@@ -24,6 +24,7 @@ type Pipeline struct {
 	InputChan  chan models.Message
 	OutputChan chan models.Message
 	wg         sync.WaitGroup
+	Ctx        context.Context
 }
 
 func (p *Pipeline) Start() {
@@ -45,8 +46,10 @@ func (p *Pipeline) Wait() {
 	p.wg.Wait()
 }
 
-func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
+func LoadPipeline(p *config.Pipeline, ctx context.Context) (pipeline *Pipeline, err error) {
 	pipeline = new(Pipeline)
+
+	pipeline.Ctx = ctx
 
 	pipeline.InputChan = make(chan models.Message, 1000)
 	pipeline.OutputChan = make(chan models.Message, 1000)
@@ -81,10 +84,10 @@ func LoadPipeline(p *config.Pipeline) (pipeline *Pipeline, err error) {
 	for _, inputConfig := range inputConfigs {
 		switch inputConfig["driver"] {
 		case "http":
-			input, _ := inputhttp.InitHandler(context.Background(), inputConfig)
+			input, _ := inputhttp.InitHandler(pipeline.Ctx, inputConfig)
 			pipeline.Inputs = append(pipeline.Inputs, input)
 		case "exec":
-			input, _ := inputexec.InitHandler(context.Background(), inputConfig)
+			input, _ := inputexec.InitHandler(pipeline.Ctx, inputConfig)
 			pipeline.Inputs = append(pipeline.Inputs, input)
 		}
 	}
