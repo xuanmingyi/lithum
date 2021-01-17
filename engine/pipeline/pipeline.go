@@ -6,6 +6,8 @@ import (
 	inputexec "engine/input/exec"
 	inputhttp "engine/input/http"
 	"engine/models"
+	outputmysql "engine/output/mysql"
+	outputredis "engine/output/redis"
 	"io/ioutil"
 	"path"
 	"sync"
@@ -89,6 +91,23 @@ func LoadPipeline(p *config.Pipeline, ctx context.Context) (pipeline *Pipeline, 
 		case "exec":
 			input, _ := inputexec.InitHandler(pipeline.Ctx, inputConfig)
 			pipeline.Inputs = append(pipeline.Inputs, input)
+		}
+	}
+
+	var outputConfigs []map[string]interface{}
+	err = yaml.Unmarshal([]byte(pipeline.OutputRaw), &outputConfigs)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, outputConfig := range outputConfigs {
+		switch outputConfig["driver"].(string) {
+		case "mysql":
+			output, _ := outputmysql.InitHandler(pipeline.Ctx, outputConfig)
+			pipeline.Outputs = append(pipeline.Outputs, output)
+		case "redis":
+			output, _ := outputredis.InitHandler(pipeline.Ctx, outputConfig)
+			pipeline.Outputs = append(pipeline.Outputs, output)
 		}
 	}
 

@@ -1,5 +1,8 @@
-- driver: mysql
-  url: root:123456@localhost/db
-  table: ips
-  fields:
-    - ip: ip
+#- driver: mysql
+#  url: root:123456@localhost/mydb
+#  table: ips
+#  fields:
+#    - ip: ip
+- driver: redis
+  url: redis://127.0.0.1:6379/0
+  queue: output

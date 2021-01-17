@@ -25,7 +25,7 @@ func (f *Filter) Start(input chan models.Message, output chan models.Message) {
 			if err != nil {
 				panic(err)
 			}
-			msg.Output = L.GetGlobal("output").String()
+			msg.Output = L.GetGlobal("output").(lua.LString).String()
 			output <- msg
 		} else {
 			fmt.Println(msg)
