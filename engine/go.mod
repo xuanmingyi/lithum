@@ -7,6 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/junhsieh/goexamples v0.0.0-20190721045834-1c67ae74caa6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
+	github.com/stretchr/testify v1.6.1
 	github.com/tengattack/gluasql v0.0.0-20181229041402-2e5ed630c4cf // indirect
 	github.com/vadv/gopher-lua-libs v0.1.1
 	github.com/yhat/scrape v0.0.0-20161128144610-24b7890b0945
