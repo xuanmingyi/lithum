@@ -29,7 +29,7 @@ func InitHandler(ctx context.Context, values map[string]string) (input *InputExe
 	return input, nil
 }
 
-func (t *InputExec) Start(msg chan models.Message) {
+func (t *InputExec) Start(model chan models.Event) {
 	startChan := make(chan bool, 1)
 	ticker := time.NewTicker(time.Duration(t.Interval) * time.Second)
 	startChan <- true
@@ -39,21 +39,21 @@ func (t *InputExec) Start(msg chan models.Message) {
 		case <-t.Ctx.Done():
 			return
 		case <-startChan:
-			msg <- t.Exec()
+			model <- t.Exec()
 		case <-ticker.C:
-			msg <- t.Exec()
+			model <- t.Exec()
 		}
 	}
 }
 
-func (t *InputExec) Exec() (message models.Message) {
+func (t *InputExec) Exec() (event models.Event) {
 	cmd := exec.Command(t.Cmd)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		message.Body = ""
-		message.Tags = append(message.Tags, ErrorTag)
+		event.Body = ""
+		event.Tags = append(event.Tags, ErrorTag)
 	} else {
-		message.Body = string(out)
+		event.Body = string(out)
 	}
-	return message
+	return event
 }

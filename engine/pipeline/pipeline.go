@@ -23,8 +23,8 @@ type Pipeline struct {
 	Inputs     []Input
 	Filter     Filter
 	Outputs    []Output
-	InputChan  chan models.Message
-	OutputChan chan models.Message
+	InputChan  chan models.Event
+	OutputChan chan models.Event
 	wg         sync.WaitGroup
 	Ctx        context.Context
 }
@@ -53,8 +53,8 @@ func LoadPipeline(p *config.Pipeline, ctx context.Context) (pipeline *Pipeline, 
 
 	pipeline.Ctx = ctx
 
-	pipeline.InputChan = make(chan models.Message, 1000)
-	pipeline.OutputChan = make(chan models.Message, 1000)
+	pipeline.InputChan = make(chan models.Event, 1000)
+	pipeline.OutputChan = make(chan models.Event, 1000)
 
 	pipeline.Name = p.Name
 

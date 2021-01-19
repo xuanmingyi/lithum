@@ -3,5 +3,5 @@ package pipeline
 import "engine/models"
 
 type Output interface {
-	Start(chan models.Message)
+	Start(chan models.Event)
 }

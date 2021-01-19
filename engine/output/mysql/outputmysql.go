@@ -24,13 +24,13 @@ func InitHandler(ctx context.Context, values map[string]interface{}) (output *Ou
 	return output, nil
 }
 
-func (t *OutputMySQL) Start(output chan models.Message) {
+func (t *OutputMySQL) Start(output chan models.Event) {
 	for {
 		select {
 		case <-t.Ctx.Done():
 			return
-		case msg := <-output:
-			fmt.Println(msg)
+		case event := <-output:
+			fmt.Println(event)
 		}
 	}
 }

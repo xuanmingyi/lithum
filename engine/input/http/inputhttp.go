@@ -30,7 +30,7 @@ func InitHandler(ctx context.Context, values map[string]string) (input *InputHtt
 	return input, nil
 }
 
-func (t *InputHttp) Start(msg chan models.Message) {
+func (t *InputHttp) Start(msg chan models.Event) {
 	startChan := make(chan bool, 1)
 	ticker := time.NewTicker(time.Duration(t.Interval) * time.Second)
 	defer ticker.Stop()
@@ -47,7 +47,7 @@ func (t *InputHttp) Start(msg chan models.Message) {
 	}
 }
 
-func (t *InputHttp) Request() (message models.Message) {
+func (t *InputHttp) Request() (event models.Event) {
 	resp, err := http.Get(t.URL)
 	if err != nil {
 		panic(err)
@@ -57,6 +57,6 @@ func (t *InputHttp) Request() (message models.Message) {
 	if err != nil {
 		panic(err)
 	}
-	message.Body = string(body)
-	return message
+	event.Body = string(body)
+	return event
 }

@@ -21,7 +21,7 @@ event:set("key5", {"v1", "v2", "v3"})
 event:set("key6", {v1="vv1", v2="vv2", v3="vv3"})
 event:set("key6", {v1="vv1", v2="vv2", v3={"vvv1", "vvv2", "vvv3"}})
 
-print(event:get("key1"))
+event:get("key1")
 --event:dump()
 `)
 	if err != nil {

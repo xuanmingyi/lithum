@@ -7,6 +7,7 @@ import (
 )
 
 type Event struct {
+	Body   string
 	Values map[string]interface{}
 	Tags   []string
 }
@@ -25,6 +26,17 @@ func NewEvent(L *lua.LState) (event *Event) {
 
 	L.SetGlobal("event", ud)
 	return event
+}
+
+func (event *Event) Load(L *lua.LState) {
+	mt := L.NewTypeMetatable(luaEventTypeName)
+	L.SetField(mt, "__index", L.SetFuncs(L.NewTable(), eventMethods))
+
+	ud := L.NewUserData()
+	ud.Value = event
+	L.SetMetatable(ud, L.GetTypeMetatable(luaEventTypeName))
+
+	L.SetGlobal("event", ud)
 }
 
 func (event *Event) Get(arg string) (ret interface{}) {
@@ -84,13 +96,21 @@ func eventGet(L *lua.LState) int {
 
 func (event *Event) Set(arg string, value interface{}) {
 	var pointer map[string]interface{}
-	//var name string
+	var name string
+	if event.Values == nil {
+		event.Values = make(map[string]interface{})
+	}
 	pointer = event.Values
 	names := splitName(arg)
 	for i := 0; i < len(names)-1; i++ {
-		fmt.Println(pointer)
+		name = names[i]
+		if pointer[name] == nil {
+			pointer[name] = make(map[string]interface{})
+		}
+		pointer = pointer[name].(map[string]interface{})
 	}
-	fmt.Println(names)
+	name = names[len(names)-1]
+	pointer[name] = value
 }
 
 func eventSet(L *lua.LState) int {
@@ -122,7 +142,6 @@ func eventSet(L *lua.LState) int {
 	}
 	name = names[len(names)-1]
 	pointer[name] = mapValue(value)
-
 	return 0
 }
 

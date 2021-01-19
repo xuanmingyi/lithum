@@ -12,23 +12,25 @@ type Filter struct {
 	Code string
 }
 
-func (f *Filter) Start(input chan models.Message, output chan models.Message) {
-	var msg models.Message
+func (f *Filter) Start(input chan models.Event, output chan models.Event) {
+	var event models.Event
 
 	for {
-		msg = <-input
-		if len(msg.Tags) == 0 {
+		event = <-input
+		if len(event.Tags) == 0 {
 			L := lua.NewState()
 			libs.Preload(L)
-			L.SetGlobal("message", lua.LString(msg.Body))
+
+			event.Load(L)
+			event.Set("body", event.Body)
+
 			err := L.DoString(f.Code)
 			if err != nil {
 				panic(err)
 			}
-			msg.Output = L.GetGlobal("output").(lua.LString).String()
-			output <- msg
+			output <- event
 		} else {
-			fmt.Println(msg)
+			fmt.Println(event)
 		}
 	}
 }
