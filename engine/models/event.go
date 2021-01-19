@@ -8,15 +8,13 @@ import (
 
 type Event struct {
 	Values map[string]interface{}
-	Body   string
-	Output string
 	Tags   []string
 }
 
 const luaEventTypeName = "event"
 
-func newEvent(L *lua.LState) {
-	event := &Event{}
+func NewEvent(L *lua.LState) (event *Event) {
+	event = &Event{}
 
 	mt := L.NewTypeMetatable(luaEventTypeName)
 	L.SetField(mt, "__index", L.SetFuncs(L.NewTable(), eventMethods))
@@ -26,6 +24,106 @@ func newEvent(L *lua.LState) {
 	L.SetMetatable(ud, L.GetTypeMetatable(luaEventTypeName))
 
 	L.SetGlobal("event", ud)
+	return event
+}
+
+func (event *Event) Get(arg string) (ret interface{}) {
+	var pointer map[string]interface{}
+	var name string
+	pointer = event.Values
+	names := splitName(arg)
+
+	for i := 0; i < len(names)-1; i++ {
+		name = names[i]
+		if pointer[name] == nil {
+			return nil
+		}
+		pointer = pointer[name].(map[string]interface{})
+	}
+
+	name = names[len(names)-1]
+	return pointer[name]
+}
+
+func eventGet(L *lua.LState) int {
+	var pointer map[string]interface{}
+	var name string
+
+	event := checkEvent(L)
+	pointer = event.Values
+
+	names := splitName(L.CheckString(2))
+
+	if len(names) == 0 {
+		return 0
+	}
+
+	for i := 0; i < len(names)-1; i++ {
+		name = names[i]
+		if pointer[name] == nil {
+			return 0
+		}
+		pointer = pointer[name].(map[string]interface{})
+	}
+	name = names[len(names)-1]
+	switch pointer[name].(type) {
+	case string:
+		L.Push(lua.LString(pointer[name].(string)))
+		return 1
+	case float64:
+		L.Push(lua.LNumber(pointer[name].(float64)))
+		return 1
+	case bool:
+		L.Push(lua.LBool(pointer[name].(bool)))
+		return 1
+	default:
+		return 0
+	}
+	return 0
+}
+
+func (event *Event) Set(arg string, value interface{}) {
+	var pointer map[string]interface{}
+	//var name string
+	pointer = event.Values
+	names := splitName(arg)
+	for i := 0; i < len(names)-1; i++ {
+		fmt.Println(pointer)
+	}
+	fmt.Println(names)
+}
+
+func eventSet(L *lua.LState) int {
+	event := checkEvent(L)
+
+	if event.Values == nil {
+		event.Values = make(map[string]interface{})
+	}
+
+	names := splitName(L.CheckString(2))
+
+	if len(names) == 0 {
+		panic("error")
+		return 0
+	}
+
+	value := L.CheckAny(3)
+
+	var pointer map[string]interface{}
+	pointer = event.Values
+	var name string
+
+	for i := 0; i < len(names)-1; i++ {
+		name = names[i]
+		if pointer[name] == nil {
+			pointer[name] = make(map[string]interface{})
+		}
+		pointer = pointer[name].(map[string]interface{})
+	}
+	name = names[len(names)-1]
+	pointer[name] = mapValue(value)
+
+	return 0
 }
 
 func checkEvent(L *lua.LState) (event *Event) {
@@ -34,12 +132,6 @@ func checkEvent(L *lua.LState) (event *Event) {
 		return event
 	}
 	return nil
-}
-
-func eventGet(L *lua.LState) int {
-	event := checkEvent(L)
-	fmt.Println(event)
-	return 0
 }
 
 func splitName(name string) []string {
@@ -83,38 +175,35 @@ func splitName(name string) []string {
 	return results
 }
 
-func eventSet(L *lua.LState) int {
-	event := checkEvent(L)
-
-	names := splitName(L.CheckString(2))
-
-	if len(names) == 0 {
-		panic("error")
-		return 0
-	}
-
-	value := L.CheckAny(3)
-
-	var pointer map[string]interface{}
-	pointer = event.Values
-
-	for i := 0; i < len(names)-1; i++ {
-		if pointer[names[i]] == nil {
-			pointer[names[i]] = make(map[string]interface{})
-		}
-		pointer = pointer[names[i]].(map[string]interface{})
-	}
-
+func mapValue(value lua.LValue) interface{} {
 	switch value.(type) {
 	case lua.LString:
-		fmt.Println("LString")
+		return string(value.(lua.LString))
 	case lua.LNumber:
-		fmt.Println("LNumber")
+		return float64(value.(lua.LNumber))
 	case lua.LBool:
-		fmt.Println("LBool")
+		return bool(value.(lua.LBool))
+	case *lua.LTable:
+		tb := value.(*lua.LTable)
+		len := tb.Len()
+		if len == 0 {
+			data := make(map[string]interface{})
+			tb.ForEach(func(key, val lua.LValue) {
+				k := string(key.(lua.LString))
+				data[k] = mapValue(val)
+			})
+			return data
+		} else {
+			data := make([]interface{}, len)
+			tb.ForEach(func(key, val lua.LValue) {
+				k := int(key.(lua.LNumber))
+				data[k-1] = mapValue(val)
+			})
+			return data
+		}
+	default:
+		return nil
 	}
-	fmt.Println(event, value)
-	return 0
 }
 
 func eventDump(L *lua.LState) int {

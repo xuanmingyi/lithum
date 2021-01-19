@@ -7,23 +7,28 @@ import (
 	"testing"
 )
 
-func NewEvent(t *testing.T) {
+func TestNewEvent(t *testing.T) {
+	assert := assert.New(t)
 	L := lua.NewState()
-	newEvent(L)
+	event := NewEvent(L)
 	err := L.DoString(`
 event:set("key1", "val1")
 event:set("key2", 222)
 event:set("key3", true)
-
-event:dump()
-
+event:set("[key4][subkey]", "subval1")
 event:set("[key1]", "val2")
+event:set("key5", {"v1", "v2", "v3"})
+event:set("key6", {v1="vv1", v2="vv2", v3="vv3"})
+event:set("key6", {v1="vv1", v2="vv2", v3={"vvv1", "vvv2", "vvv3"}})
 
-event:dump()
+print(event:get("key1"))
+--event:dump()
 `)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	assert.EqualValues("val2", event.Get("key1"))
 }
 
 func TestSplitName(t *testing.T) {
