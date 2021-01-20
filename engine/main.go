@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"engine/metric"
 	"fmt"
 	"os"
 	"os/signal"
@@ -42,6 +43,8 @@ func main() {
 	for _, p := range pipelines {
 		p.Wait()
 	}
+
+	go metric.Run()
 
 	waitSingals(ctx)
 }
