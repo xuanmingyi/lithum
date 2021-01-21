@@ -1,3 +1,4 @@
+enable_metrics: true
 pipelines:
   - name: test1
     path: pipelines/test1

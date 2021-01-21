@@ -7,8 +7,7 @@ import (
 	"os"
 	"os/signal"
 
-	"engine/config"
-	"engine/pipeline"
+	"engine/global"
 )
 
 func waitSingals(ctx context.Context) error {
@@ -24,13 +23,13 @@ func waitSingals(ctx context.Context) error {
 }
 
 func main() {
-	var pipelines []*pipeline.Pipeline
+	var pipelines []*global.Pipeline
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	for _, p := range config.Conf.Pipelines {
-		_pipeline, err := pipeline.LoadPipeline(&p, ctx)
+	for _, p := range global.Config.Pipelines {
+		_pipeline, err := global.LoadPipeline(&p, ctx)
 		if err != nil {
 			panic(err)
 		}
@@ -44,7 +43,9 @@ func main() {
 		p.Wait()
 	}
 
-	go metric.Run()
+	if global.Config.EnableMetrics {
+		go metric.Run()
+	}
 
 	waitSingals(ctx)
 }

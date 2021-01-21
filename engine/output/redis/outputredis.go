@@ -14,6 +14,8 @@ type OutputRedis struct {
 	Queue string
 }
 
+const ModuleName = "redis"
+
 func InitHandler(ctx context.Context, values map[string]interface{}) (output *OutputRedis, err error) {
 	output = new(OutputRedis)
 	output.Ctx = ctx

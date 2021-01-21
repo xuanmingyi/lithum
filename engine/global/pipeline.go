@@ -1,13 +1,13 @@
-package pipeline
+package global
 
 import (
 	"context"
-	"engine/config"
 	inputexec "engine/input/exec"
 	inputhttp "engine/input/http"
 	"engine/models"
 	outputmysql "engine/output/mysql"
 	outputredis "engine/output/redis"
+	"engine/pipeline"
 	"io/ioutil"
 	"path"
 	"sync"
@@ -20,9 +20,9 @@ type Pipeline struct {
 	InputRaw   string
 	FilterRaw  string
 	OutputRaw  string
-	Inputs     []Input
-	Filter     Filter
-	Outputs    []Output
+	Inputs     []pipeline.Input
+	Filter     pipeline.Filter
+	Outputs    []pipeline.Output
 	InputChan  chan models.Event
 	OutputChan chan models.Event
 	wg         sync.WaitGroup
@@ -48,7 +48,7 @@ func (p *Pipeline) Wait() {
 	p.wg.Wait()
 }
 
-func LoadPipeline(p *config.Pipeline, ctx context.Context) (pipeline *Pipeline, err error) {
+func LoadPipeline(p *Pipeline, ctx context.Context) (pipeline *Pipeline, err error) {
 	pipeline = new(Pipeline)
 
 	pipeline.Ctx = ctx
