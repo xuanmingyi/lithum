@@ -6,6 +6,8 @@ import (
 	"fmt"
 )
 
+const ModuleName = "mysql"
+
 type Field map[string]string
 
 type OutputMySQL struct {

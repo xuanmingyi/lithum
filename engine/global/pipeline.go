@@ -2,11 +2,7 @@ package global
 
 import (
 	"context"
-	inputexec "engine/input/exec"
-	inputhttp "engine/input/http"
 	"engine/models"
-	outputmysql "engine/output/mysql"
-	outputredis "engine/output/redis"
 	"engine/pipeline"
 	"io/ioutil"
 	"path"
@@ -48,52 +44,48 @@ func (p *Pipeline) Wait() {
 	p.wg.Wait()
 }
 
-func LoadPipeline(p *Pipeline, ctx context.Context) (pipeline *Pipeline, err error) {
+func ReadFile(pipeConf *pipeConfig, name string) string {
+	content, err := ioutil.ReadFile(path.Join(pipeConf.Path, name))
+	if err != nil {
+		panic(err)
+	}
+	return string(content)
+}
+
+func LoadPipeline(pipeConf *pipeConfig) (pipeline *Pipeline, err error) {
+
 	pipeline = new(Pipeline)
 
-	pipeline.Ctx = ctx
+	pipeline.Ctx = Global.GlobalCtx
 
 	pipeline.InputChan = make(chan models.Event, 1000)
 	pipeline.OutputChan = make(chan models.Event, 1000)
 
-	pipeline.Name = p.Name
+	pipeline.Name = pipeConf.Name
 
-	content, err := ioutil.ReadFile(path.Join(p.Path, "input.yaml"))
-	if err != nil {
-		panic(err)
-	}
-	pipeline.InputRaw = string(content)
-
-	content, err = ioutil.ReadFile(path.Join(p.Path, "filter.lua"))
-	if err != nil {
-		panic(err)
-	}
-	pipeline.FilterRaw = string(content)
+	// Read Files
+	pipeline.InputRaw = ReadFile(pipeConf, "input.yaml")
+	pipeline.FilterRaw = ReadFile(pipeConf, "filter.lua")
 	pipeline.Filter.Code = pipeline.FilterRaw
+	pipeline.OutputRaw = ReadFile(pipeConf, "output.yaml")
 
-	content, err = ioutil.ReadFile(path.Join(p.Path, "output.yaml"))
-	if err != nil {
-		panic(err)
-	}
-	pipeline.OutputRaw = string(content)
-
-	var inputConfigs []map[string]string
+	// Load Input
+	var inputConfigs []map[string]interface{}
 	err = yaml.Unmarshal([]byte(pipeline.InputRaw), &inputConfigs)
 	if err != nil {
 		panic(err)
 	}
 
 	for _, inputConfig := range inputConfigs {
-		switch inputConfig["driver"] {
-		case "http":
-			input, _ := inputhttp.InitHandler(pipeline.Ctx, inputConfig)
-			pipeline.Inputs = append(pipeline.Inputs, input)
-		case "exec":
-			input, _ := inputexec.InitHandler(pipeline.Ctx, inputConfig)
-			pipeline.Inputs = append(pipeline.Inputs, input)
+		handler := Global.InputModules[inputConfig["driver"].(string)]
+		input, err := handler(pipeConf, inputConfig)
+		if err != nil {
+			panic(err)
 		}
+		pipeline.Inputs = append(pipeline.Inputs, input)
 	}
 
+	// Load Output
 	var outputConfigs []map[string]interface{}
 	err = yaml.Unmarshal([]byte(pipeline.OutputRaw), &outputConfigs)
 	if err != nil {
@@ -101,12 +93,10 @@ func LoadPipeline(p *Pipeline, ctx context.Context) (pipeline *Pipeline, err err
 	}
 
 	for _, outputConfig := range outputConfigs {
-		switch outputConfig["driver"].(string) {
-		case "mysql":
-			output, _ := outputmysql.InitHandler(pipeline.Ctx, outputConfig)
-			pipeline.Outputs = append(pipeline.Outputs, output)
-		case "redis":
-			output, _ := outputredis.InitHandler(pipeline.Ctx, outputConfig)
+		handler := Global.OutputModules[outputConfig["driver"].(string)]
+		output, err := handler(pipeConf, outputConfig)
+		if err != nil {
+			panic(err)
 			pipeline.Outputs = append(pipeline.Outputs, output)
 		}
 	}

@@ -2,8 +2,8 @@ package global
 
 import (
 	"context"
-	inputexec "engine/input/exec"
 	inputhttp "engine/input/http"
+	outputmysql "engine/output/mysql"
 	outputredis "engine/output/redis"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -47,9 +47,9 @@ func (g *global) Init() {
 
 func RegistModules() {
 	// Input
-	RegistInputHandler(inputexec.ModuleName, inputexec.InitHandler)
+	//RegistInputHandler(inputexec.ModuleName, inputexec.InitHandler)
 	RegistInputHandler(inputhttp.ModuleName, inputhttp.InitHandler)
 
 	// Output
-	RegistOutputHandler(outputredis.ModuleName, outputredis.InitHandler)
+	RegistOutputHandler(outputmysql.ModuleName, outputmysql.InitHandler)
 }

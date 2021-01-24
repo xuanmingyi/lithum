@@ -28,23 +28,26 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	for _, p := range global.Config.Pipelines {
-		_pipeline, err := global.LoadPipeline(&p, ctx)
+	global.Global.GlobalCtx = ctx
+
+	for _, pipeConf := range global.Global.PipeConfs {
+		pipeline, err := global.LoadPipeline(&pipeConf)
 		if err != nil {
 			panic(err)
 		}
-		pipelines = append(pipelines, _pipeline)
-	}
-	for _, p := range pipelines {
-		go p.Start()
+		pipelines = append(pipelines, pipeline)
 	}
 
-	for _, p := range pipelines {
-		p.Wait()
+	for _, pipeline := range pipelines {
+		go pipeline.Start()
 	}
 
-	if global.Config.EnableMetrics {
+	if global.Global.EnableMetrics {
 		go metric.Run()
+	}
+
+	for _, pipeline := range pipelines {
+		pipeline.Wait()
 	}
 
 	waitSingals(ctx)

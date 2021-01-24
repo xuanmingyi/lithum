@@ -3,6 +3,7 @@ package inputexec
 import (
 	"context"
 	"engine/models"
+	"engine/pipeline"
 	"os/exec"
 	"strconv"
 	"time"
@@ -18,15 +19,15 @@ type InputExec struct {
 	Interval int
 }
 
-func InitHandler(ctx context.Context, values map[string]string) (input *InputExec, err error) {
-	input = new(InputExec)
-	input.Ctx = ctx
-	input.Interval, err = strconv.Atoi(values["interval"])
+func InitHandler(ctx context.Context, values map[string]string) (input *pipeline.Input, err error) {
+	inputExec := new(InputExec)
+	inputExec.Ctx = ctx
+	inputExec.Interval, err = strconv.Atoi(values["interval"])
 	if err != nil {
 		panic(err)
 	}
-	input.Cmd = values["cmd"]
-	return input, nil
+	inputExec.Cmd = values["cmd"]
+	return inputExec.(*pipeline.Input), nil
 }
 
 func (t *InputExec) Start(model chan models.Event) {
