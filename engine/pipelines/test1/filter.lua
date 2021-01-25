@@ -2,9 +2,6 @@ local json = require("json")
 local regexp = require("regexp")
 
 local body = event:get("body")
-
-print(body)
-
 local result, err = regexp.find_all_string_submatch("\\d+\\.\\d+\\.\\d+\\.\\d+", body)
 
 ips = {}

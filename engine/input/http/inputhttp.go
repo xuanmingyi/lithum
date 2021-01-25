@@ -3,9 +3,9 @@ package inputhttp
 import (
 	"context"
 	"engine/models"
+	"engine/pipeline"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -19,14 +19,11 @@ type InputHttp struct {
 	URL      string `yaml:"url"`
 }
 
-func InitHandler(ctx context.Context, values map[string]string) (input *InputHttp, err error) {
-	input = new(InputHttp)
+func InitHandler(ctx context.Context, values map[string]interface{}) (i pipeline.Input, err error) {
+	input := new(InputHttp)
 	input.Ctx = ctx
-	input.Interval, err = strconv.Atoi(values["interval"])
-	if err != nil {
-		return nil, err
-	}
-	input.URL = values["url"]
+	input.Interval = values["interval"].(int)
+	input.URL = values["url"].(string)
 	return input, nil
 }
 

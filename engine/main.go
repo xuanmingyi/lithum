@@ -8,6 +8,8 @@ import (
 	"os/signal"
 
 	"engine/global"
+
+	"engine/log"
 )
 
 func waitSingals(ctx context.Context) error {
@@ -23,6 +25,8 @@ func waitSingals(ctx context.Context) error {
 }
 
 func main() {
+	log.Log.Info("启动程序")
+
 	var pipelines []*global.Pipeline
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -51,4 +55,6 @@ func main() {
 	}
 
 	waitSingals(ctx)
+
+	log.Log.Info("程序退出")
 }

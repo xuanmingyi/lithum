@@ -8,6 +8,7 @@ require (
 	github.com/junhsieh/goexamples v0.0.0-20190721045834-1c67ae74caa6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
 	github.com/prometheus/client_golang v1.5.1
+	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1
 	github.com/tengattack/gluasql v0.0.0-20181229041402-2e5ed630c4cf // indirect
 	github.com/vadv/gopher-lua-libs v0.1.1

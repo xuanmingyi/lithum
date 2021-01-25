@@ -78,7 +78,7 @@ func LoadPipeline(pipeConf *pipeConfig) (pipeline *Pipeline, err error) {
 
 	for _, inputConfig := range inputConfigs {
 		handler := Global.InputModules[inputConfig["driver"].(string)]
-		input, err := handler(pipeConf, inputConfig)
+		input, err := handler(Global.GlobalCtx, inputConfig)
 		if err != nil {
 			panic(err)
 		}
@@ -94,11 +94,11 @@ func LoadPipeline(pipeConf *pipeConfig) (pipeline *Pipeline, err error) {
 
 	for _, outputConfig := range outputConfigs {
 		handler := Global.OutputModules[outputConfig["driver"].(string)]
-		output, err := handler(pipeConf, outputConfig)
+		output, err := handler(Global.GlobalCtx, outputConfig)
 		if err != nil {
 			panic(err)
-			pipeline.Outputs = append(pipeline.Outputs, output)
 		}
+		pipeline.Outputs = append(pipeline.Outputs, output)
 	}
 
 	return pipeline, nil
