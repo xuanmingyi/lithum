@@ -2,15 +2,9 @@ local json = require("json")
 local regexp = require("regexp")
 
 local body = event:get("body")
-local result, err = regexp.find_all_string_submatch("\\d+\\.\\d+\\.\\d+\\.\\d+", body)
+local result, err = regexp.find_all_string_submatch("你的外网IP地址是：(\\d+\\.\\d+\\.\\d+\\.\\d+)", body)
 
-ips = {}
+print(result[1][2])
 
-for k, v in ipairs(result) do
-    if (v[1] ~= "255.255.255.0") then
-        ips[k] = {ip=v[1]}
-    end
-end
-
-output, err=[[ [{"ip": "192.168.6.1"}, {"ip": "127.0.0.1'"}]
-]]
+sql = "INSERT INTO "
+event:set("sqls", {})

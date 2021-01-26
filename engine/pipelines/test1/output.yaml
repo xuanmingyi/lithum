@@ -1,3 +1,3 @@
 - driver: mysql
-  dsn: root:root@(localhost)/root
+  dsn: root:@(localhost)/mydb
   field: sqls
