@@ -7,6 +7,7 @@ import (
 
 	inputhttp "engine/input/http"
 	outputmysql "engine/output/mysql"
+	outputsqlite "engine/output/sqlite"
 )
 
 type pipeConfig struct {
@@ -53,4 +54,5 @@ func RegistModules() {
 
 	// Output
 	RegistOutputHandler(outputmysql.ModuleName, outputmysql.InitHandler)
+	RegistOutputHandler(outputsqlite.ModuleName, outputsqlite.InitHandler)
 }
