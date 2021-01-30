@@ -5,6 +5,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 
+	inputcron "engine/input/cron"
 	inputhttp "engine/input/http"
 	outputmysql "engine/output/mysql"
 	outputsqlite "engine/output/sqlite"
@@ -51,6 +52,7 @@ func (g *global) Init() {
 func RegistModules() {
 	// Input
 	RegistInputHandler(inputhttp.ModuleName, inputhttp.InitHandler)
+	RegistInputHandler(inputcron.ModuleName, inputcron.InitHandler)
 
 	// Output
 	RegistOutputHandler(outputmysql.ModuleName, outputmysql.InitHandler)

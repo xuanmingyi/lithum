@@ -1,10 +1,11 @@
 package pipeline
 
 import (
+	"engine/libs/gluahttpscrape"
 	"engine/models"
 	"fmt"
-	libs "github.com/vadv/gopher-lua-libs"
 
+	libs "github.com/vadv/gopher-lua-libs"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -20,6 +21,8 @@ func (f *Filter) Start(input chan models.Event, output chan models.Event) {
 		if len(event.Tags) == 0 {
 			L := lua.NewState()
 			libs.Preload(L)
+
+			L.PreloadModule("scrape", gluahttpscrape.NewHttpScrapeModule().Loader)
 
 			event.Load(L)
 			event.Set("body", event.Body)

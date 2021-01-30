@@ -1,5 +1,0 @@
-- driver: mysql
-  url: root:123456@localhost/db
-  mappings:
-    - ss: mm
-    - www: kkk

@@ -91,8 +91,9 @@ func (h *httpScrapeModule) findAttrs(selector string, L *lua.LState) int {
 		}
 	}
 	L.Push(luar.New(L, attrResults))
+	L.Push(lua.LNumber(len(attrResults)))
 	L.Push(lua.LNil)
-	return 2
+	return 3
 }
 
 func (h *httpScrapeModule) findText(selector string, L *lua.LState) int {

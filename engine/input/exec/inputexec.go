@@ -19,7 +19,7 @@ type InputExec struct {
 	Interval int
 }
 
-func InitHandler(ctx context.Context, values map[string]string) (input *pipeline.Input, err error) {
+func InitHandler(ctx context.Context, values map[string]string) (input pipeline.Input, err error) {
 	inputExec := new(InputExec)
 	inputExec.Ctx = ctx
 	inputExec.Interval, err = strconv.Atoi(values["interval"])
@@ -27,7 +27,7 @@ func InitHandler(ctx context.Context, values map[string]string) (input *pipeline
 		panic(err)
 	}
 	inputExec.Cmd = values["cmd"]
-	return inputExec.(*pipeline.Input), nil
+	return inputExec, nil
 }
 
 func (t *InputExec) Start(model chan models.Event) {
