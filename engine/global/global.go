@@ -38,7 +38,7 @@ func init() {
 }
 
 func (g *global) Init() {
-	content, err := ioutil.ReadFile("engine.yaml")
+	content, err := ioutil.ReadFile("pipelines/engine.yaml")
 	if err != nil {
 		panic(err)
 	}

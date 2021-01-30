@@ -7,8 +7,8 @@ import (
 	"engine/models"
 	"engine/pipeline"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/sirupsen/logrus"
 )
 
 const ModuleName = "mysql"
@@ -17,7 +17,7 @@ type Field map[string]string
 
 type OutputMySQL struct {
 	Ctx   context.Context
-	DB *sql.DB
+	DB    *sql.DB
 	DSN   string
 	Field string
 }
@@ -45,10 +45,10 @@ func (t *OutputMySQL) Start(output chan models.Event) {
 			} else {
 				// 运行
 				if event.Values[t.Field] != nil {
-					sqls := event.Values[t.Field].([]string)
+					sqls := event.Values[t.Field].([]interface{})
 					for _, sql := range sqls {
 						db := t.Ping()
-						result, err := db.Exec(sql)
+						result, err := db.Exec(sql.(string))
 						fmt.Println(result)
 						fmt.Println(err)
 					}
@@ -63,7 +63,7 @@ func (t *OutputMySQL) Start(output chan models.Event) {
 	}
 }
 
-func (t *OutputMySQL) Ping() (DB *sql.DB){
+func (t *OutputMySQL) Ping() (DB *sql.DB) {
 	var err error
 	if t.DB != nil {
 		if err = t.DB.Ping(); err == nil {
