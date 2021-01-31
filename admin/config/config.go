@@ -6,24 +6,22 @@ import (
 	"io/ioutil"
 )
 
-
 type object struct {
 	Title string `yaml:"title"`
-	Name string `yaml:"name"`
+	Name  string `yaml:"name"`
 }
 
-
 type config struct {
-	DSN string `yaml:"dsn"`
+	DSN     string   `yaml:"dsn"`
 	Objects []object `yaml:"objects"`
 
-	DB *sql.DB
+	DB     *sql.DB
 	Models []*Model
 }
 
 var Config config
 
-func init(){
+func init() {
 	content, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
 		panic(err)

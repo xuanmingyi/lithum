@@ -2,4 +2,4 @@ dsn: "root:root@(127.0.0.1)/sys"
 
 objects:
   - name: site
-    title: 网站
+      title: 网站

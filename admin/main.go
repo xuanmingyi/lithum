@@ -1,24 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
-
 	"admin/config"
+	"admin/handlers"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	router := gin.Default()
 
-	fmt.Println(config.Config)
-
-	r := gin.Default()
-	r.Static("/static", "./static")
-	r.LoadHTMLGlob("templates/*.html")
-	r.GET("/", func(c *gin.Context){
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "Gin 模板",
-		})
+	router.Static("/static", "./static")
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/manage/:name/index", handlers.ManageHandler)
+	router.GET("/manage/:name/data", handlers.DataHandler)
+	router.GET("/", func (c *gin.Context) {
+		if len(config.Config.Models) >= 1 {
+			c.Request.URL.Path = "/manage/" + config.Config.Models[0].Name + "/index"
+		}
+		router.HandleContext(c)
 	})
-	r.Run()
+
+	router.Run()
 }

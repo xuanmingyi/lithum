@@ -55,7 +55,9 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">对象管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">网站</a></dd>
+                        {{ range $i, $v := .models }}
+                        <dd><a href="/manage/{{ $v.Name }}/index">{{ $v.Title }}</a></dd>
+                        {{ end }}
                     </dl>
                 </li>
             </ul>
@@ -102,7 +104,7 @@
 
         table.render({
             elem: '#test'
-            ,url:'/static/demo1.json'
+            ,url:'/data/{{ .current.Name }}'
             ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'

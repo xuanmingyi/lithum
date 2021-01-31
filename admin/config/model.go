@@ -7,7 +7,7 @@ import (
 )
 
 type Field struct {
-	Display string
+	Display  string
 	TypeName string
 }
 
@@ -32,14 +32,38 @@ func LoadField(comment string) (field *Field) {
 }
 
 type Model struct {
-	Name string
+	Name   string
+	Title string
 	Fields map[string]*Field
 }
 
-func (m *Model) Load() (err error){
+func (m *Model) Load() (err error) {
 	var rows *sql.Rows
+	var name string
+	var comment string
+
 	if Config.DB == nil {
 		panic("error db")
+	}
+
+	rows, err = Config.DB.Query("SELECT TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME=?", m.Name)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&comment)
+		for _, attr := range strings.Split(comment, ";") {
+			fmt.Println(attr)
+			kvs := strings.Split(attr, ":")
+			key := kvs[0]
+			value := kvs[1]
+			switch key {
+			case "title":
+				m.Title = value
+			}
+		}
 	}
 
 	rows, err = Config.DB.Query("SELECT COLUMN_NAME, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=? and TABLE_NAME=?", "sys", m.Name)
@@ -47,9 +71,6 @@ func (m *Model) Load() (err error){
 		panic(err)
 	}
 	defer rows.Close()
-
-	var name string
-	var comment string
 
 	if m.Fields == nil {
 		m.Fields = make(map[string]*Field)
@@ -75,5 +96,3 @@ func LoadModel(name string) (m *Model, err error) {
 	}
 	return m, nil
 }
-
-
