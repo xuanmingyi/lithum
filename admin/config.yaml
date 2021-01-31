@@ -1,5 +1,85 @@
 dsn: "root:root@(127.0.0.1)/sys"
 
-objects:
+models:
   - name: site
-      title: 网站
+    title: 网站
+    attributes:
+      - name: id
+        display: ID
+        tag: input
+      - name: title
+        display: 标题
+        tag: input
+      - name: size
+        display: 大小
+        tag: select
+        options:
+          - label: 111
+            value: 1
+          - label: 222
+            value: 2
+          - label: 333
+            value: 3
+      - name: span
+        display: 栅格
+        tag: input-number
+      - name: checkbox
+        display: checkbox
+        tag: checkbox-group
+        options:
+          - label: 111
+            value: 1
+          - label: 222
+            value: 2
+          - label: 333
+            value: 3
+      - name: radio
+        display: radio
+        tag: radio-group
+        options:
+          - label: 111
+            value: 1
+          - label: 222
+            value: 2
+          - label: 333
+            value: 3
+      - name: slider
+        display: slider
+        tag: slider
+      - name: switch
+        display: switch
+        tag: switch
+
+    table:
+      columns:
+        - name: id
+        - name: title
+        - name: size
+      actions:
+        - name: create
+          display: 创建
+          type: dialog
+          dialog:
+            title: 创建实例
+            fields:
+              - name: title
+              - name: size
+              - name: span
+              - name: checkbox
+              - name: radio
+              - name: slider
+              - name: switch
+      row_actions:
+        - name: edit
+          display: 编辑
+          type: dialog
+          dialog:
+            title: 创建实例
+            fields:
+              - name: title
+              - name: size
+        - name: delete
+          display: 删除
+          type: message
+        - name: view
+          display: 查看

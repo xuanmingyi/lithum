@@ -13,7 +13,7 @@ func main() {
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/manage/:name/index", handlers.ManageHandler)
 	router.GET("/manage/:name/data", handlers.DataHandler)
-	router.GET("/", func (c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
 		if len(config.Config.Models) >= 1 {
 			c.Request.URL.Path = "/manage/" + config.Config.Models[0].Name + "/index"
 		}

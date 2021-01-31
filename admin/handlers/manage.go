@@ -7,7 +7,6 @@ import (
 	"net/http"
 )
 
-
 // url:  /manage/:name/index
 // desc: 首页
 func ManageHandler(c *gin.Context) {
@@ -23,12 +22,11 @@ func ManageHandler(c *gin.Context) {
 	fmt.Println(name)
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "Gin 模板",
-		"models": config.Config.Models,
+		"title":   "Gin 模板",
+		"models":  config.Config.Models,
 		"current": current,
 	})
 }
-
 
 // url:  /manage/:name/create
 // desc: 创建
@@ -41,7 +39,6 @@ func CreateHandler(c *gin.Context) {
 		"title": "ssss",
 	})
 }
-
 
 // url:  /manage/:name/data
 // desc: 获取数据
