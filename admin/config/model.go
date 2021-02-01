@@ -19,13 +19,12 @@ type Table struct {
 }
 
 type Model struct {
-	Name       string `yaml:"name"`
-	Title      string `yaml:"title"`
-	Attributes []Attribute
+	Name       string      `yaml:"name"`
+	Title      string      `yaml:"title"`
+	Attributes []Attribute `yaml:"attributes"`
 }
 
 func LoadModel(name string) (m *Model, err error) {
 	m = &Model{Name: name}
-
 	return m, nil
 }

@@ -1,60 +1,28 @@
 dsn: "root:root@(127.0.0.1)/sys"
 
 models:
-  - name: site
-    title: 网站
+  - name: jiandan_ooxx
+    title: 图片
     attributes:
       - name: id
         display: ID
         tag: input
-      - name: title
-        display: 标题
+      - name: url
+        display: 地址
         tag: input
-      - name: size
-        display: 大小
-        tag: select
-        options:
-          - label: 111
-            value: 1
-          - label: 222
-            value: 2
-          - label: 333
-            value: 3
-      - name: span
-        display: 栅格
-        tag: input-number
-      - name: checkbox
-        display: checkbox
-        tag: checkbox-group
-        options:
-          - label: 111
-            value: 1
-          - label: 222
-            value: 2
-          - label: 333
-            value: 3
-      - name: radio
-        display: radio
-        tag: radio-group
-        options:
-          - label: 111
-            value: 1
-          - label: 222
-            value: 2
-          - label: 333
-            value: 3
-      - name: slider
-        display: slider
-        tag: slider
-      - name: switch
-        display: switch
-        tag: switch
+      - name: status
+        display: 状态
+        tag: input
+      - name: date
+        display: 日期
+        tag: input
 
     table:
       columns:
         - name: id
-        - name: title
-        - name: size
+        - name: url
+        - name: status
+        - name: date
       actions:
         - name: create
           display: 创建
@@ -62,13 +30,10 @@ models:
           dialog:
             title: 创建实例
             fields:
-              - name: title
-              - name: size
-              - name: span
-              - name: checkbox
-              - name: radio
-              - name: slider
-              - name: switch
+              - name: id
+              - name: url
+              - name: status
+              - name: date
       row_actions:
         - name: edit
           display: 编辑
@@ -76,10 +41,33 @@ models:
           dialog:
             title: 创建实例
             fields:
-              - name: title
-              - name: size
+              - name: url
+              - name: status
+              - name: date
         - name: delete
           display: 删除
           type: message
         - name: view
           display: 查看
+
+  - name: site
+    title: 网站
+    attributes:
+      - name: id
+        display: ID
+        tag: input
+      - name: name
+        display: 名字
+        tag: input
+      - name: url
+        display: URL
+        tag: input
+
+    table:
+      columns:
+        - name: id
+        - name: name
+        - name: url
+      actions:
+        - name: create
+          display: 创建
