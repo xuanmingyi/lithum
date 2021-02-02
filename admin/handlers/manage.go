@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 // url:  /manage/:name/index
@@ -36,11 +37,26 @@ func CreateHandler(c *gin.Context) {
 // desc: 获取数据
 func DataHandler(c *gin.Context) {
 	name := c.Param("name")
-	//	page := c.Param("page")
-	//	limit := c.Param("limit")
+	page, err := strconv.Atoi(c.Query("page"))
+	limit, err := strconv.Atoi(c.Query("limit"))
 	ret := make(map[string]interface{})
+	var count int64
 
-	rows, err := config.Config.DB.Query(fmt.Sprintf("SELECT * FROM %s", name))
+
+	count_row, err := config.Config.DB.Query(fmt.Sprintf("SELECT count(*) FROM %s", name))
+	if err != nil {
+		panic(err)
+	}
+
+	for count_row.Next(){
+		err = count_row.Scan(&count)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(count)
+	}
+
+	rows, err := config.Config.DB.Query(fmt.Sprintf("SELECT * FROM %s ORDER BY id DESC LIMIT %d OFFSET %d", name, limit, (page - 1)*limit))
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -51,8 +67,8 @@ func DataHandler(c *gin.Context) {
 
 	ret["code"] = 0
 	ret["msg"] = ""
-	ret["count"] = 100
-	ret["data"] = make([]map[string]string, 0)
+	ret["count"] = count
+	ret["data"] = make([]map[string]interface{}, 0)
 
 	line_cache := make([]interface{}, column_length)
 	for index, _ := range line_cache {
@@ -62,11 +78,11 @@ func DataHandler(c *gin.Context) {
 
 	for rows.Next() {
 		rows.Scan(line_cache...)
-		item := make(map[string]string)
+		item := make(map[string]interface{})
 		for index, value := range line_cache {
-			item[columns[index]] = value.(string)
+			item[columns[index]] = *value.(*interface{})
 		}
-		ret["data"] = append(ret["data"].([]map[string]string), item)
+		ret["data"] = append(ret["data"].([]map[string]interface{}), item)
 	}
 
 	c.JSON(http.StatusOK, ret)

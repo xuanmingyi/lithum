@@ -1,4 +1,4 @@
-dsn: "root:root@(127.0.0.1)/sys"
+dsn: "root:@(127.0.0.1)/sys"
 
 models:
   - name: jiandan_ooxx
