@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"admin/config"
+	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -70,17 +71,20 @@ func DataHandler(c *gin.Context) {
 	ret["count"] = count
 	ret["data"] = make([]map[string]interface{}, 0)
 
+	values := make([]sql.RawBytes, column_length)
 	line_cache := make([]interface{}, column_length)
 	for index, _ := range line_cache {
-		var i interface{}
-		line_cache[index] = &i
+		line_cache[index] = &values[index]
 	}
 
+	// https://docs.hacknode.org/gopl-zh/ch7/ch7-05.html
+	// https://docs.hacknode.org/gopl-zh/ch12/ch12-05.html
+	// https://studygolang.com/articles/3244
 	for rows.Next() {
 		rows.Scan(line_cache...)
 		item := make(map[string]interface{})
-		for index, value := range line_cache {
-			item[columns[index]] = *value.(*interface{})
+		for index, value := range values {
+			item[columns[index]] = string(value)
 		}
 		ret["data"] = append(ret["data"].([]map[string]interface{}), item)
 	}
