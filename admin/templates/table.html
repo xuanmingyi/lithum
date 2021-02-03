@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
-</body>
-</html>
+    <div style="padding: 15px;">
+        <table class="layui-hide" id="{{ .current_model.Name }}" lay-filter="test"></table>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+    </div>
+
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#{{ .current_model.Name }}'
+            ,url:'/manage/{{ .current_model.Name }}/data'
+            ,title: '用户数据表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                {{ range $attribute := .current_model.Attributes }}
+    , {field: '{{ $attribute.Name }}', title: '{{ $attribute.Display }}'}
+        {{ end }}
+    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+    ]]
+    ,page: true
+    });
+    });
+</script>

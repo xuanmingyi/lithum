@@ -34,6 +34,15 @@ func CreateHandler(c *gin.Context) {
 	})
 }
 
+func TableHandler(c *gin.Context) {
+	name := c.Param("name")
+	current_model := config.Config.GetModel(name)
+	c.HTML(http.StatusOK, "table.html", gin.H{
+		"title": "sss",
+		"current_model": current_model,
+	})
+}
+
 // url:  /manage/:name/data
 // desc: 获取数据
 func DataHandler(c *gin.Context) {
