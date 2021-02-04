@@ -22,23 +22,30 @@ func ManageHandler(c *gin.Context) {
 	})
 }
 
-// url:  /manage/:name/create
-// desc: 创建
-func CreateHandler(c *gin.Context) {
+// url:  /manage/:name/form
+// desc: 表单数据
+func FormHandler(c *gin.Context) {
 	name := c.Param("name")
 	current_model := config.Config.GetModel(name)
 
+	action_name := c.Query("action")
+
+	current_action := current_model.GetAction(action_name)
+
 	c.HTML(http.StatusOK, "form.html", gin.H{
-		"title":         "ssss",
-		"current_model": current_model,
+		"title":          "ssss",
+		"current_model":  current_model,
+		"current_action": current_action,
 	})
 }
 
+// url:  /manage/:name/table
+// desc: 表格数据
 func TableHandler(c *gin.Context) {
 	name := c.Param("name")
 	current_model := config.Config.GetModel(name)
 	c.HTML(http.StatusOK, "table.html", gin.H{
-		"title": "sss",
+		"title":         "sss",
 		"current_model": current_model,
 	})
 }
@@ -52,13 +59,12 @@ func DataHandler(c *gin.Context) {
 	ret := make(map[string]interface{})
 	var count int64
 
-
 	count_row, err := config.Config.DB.Query(fmt.Sprintf("SELECT count(*) FROM %s", name))
 	if err != nil {
 		panic(err)
 	}
 
-	for count_row.Next(){
+	for count_row.Next() {
 		err = count_row.Scan(&count)
 		if err != nil {
 			panic(err)
@@ -66,7 +72,7 @@ func DataHandler(c *gin.Context) {
 		fmt.Println(count)
 	}
 
-	rows, err := config.Config.DB.Query(fmt.Sprintf("SELECT * FROM %s ORDER BY id DESC LIMIT %d OFFSET %d", name, limit, (page - 1)*limit))
+	rows, err := config.Config.DB.Query(fmt.Sprintf("SELECT * FROM %s ORDER BY id DESC LIMIT %d OFFSET %d", name, limit, (page-1)*limit))
 	if err != nil {
 		fmt.Println(err)
 		panic(err)

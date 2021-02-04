@@ -14,6 +14,7 @@ func main() {
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/manage/:name/index", handlers.ManageHandler)
 	router.GET("/manage/:name/table", handlers.TableHandler)
+	router.GET("/manage/:name/form", handlers.FormHandler)
 	router.GET("/manage/:name/data", handlers.DataHandler)
 	router.GET("/", func(c *gin.Context) {
 		if len(config.Config.Models) >= 1 {

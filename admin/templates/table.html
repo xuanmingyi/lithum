@@ -1,28 +1,68 @@
+<div style="padding: 15px;">
+    <table class="layui-hide" id="{{ .current_model.Name }}" lay-filter="test"></table>
 
-    <div style="padding: 15px;">
-        <table class="layui-hide" id="{{ .current_model.Name }}" lay-filter="test"></table>
-        <script type="text/html" id="barDemo">
-            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-        </script>
-    </div>
+    <script type="text/html" id="toolbar_{{ .current_model.Name }}">
+        <div class="layui-input-inline">
+            <select name="modules" lay-verify="required" lay-search="">
+                <option value="">直接选择或搜索选择</option>
+                {{ range $column := .current_model.Table.Columns }}
+                <option value="{{ $column.Name }}">{{ $column.Display }}</option>
+                {{ end }}
+            </select>
+        </div>
+        <div class="layui-input-inline" style="width: 300px;">
+            <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+
+        <div class="layui-input-inline" style="float:right;">
+            {{ range $action := .current_model.Table.TableActions }}
+            <a class='layui-btn layui-btn-sm {{ if ne $action.Class "" }}{{ $action.Class }}{{ end }}' lay-event="{{ $action.Name }}">{{ $action.Display }}</a>
+            {{ end }}
+        </div>
+    </script>
+
+    <script type="text/html" id="tool_{{ .current_model.Name }}">
+        {{ range $action := .current_model.Table.RowActions }}
+        <a class='layui-btn layui-btn-xs {{ if ne $action.Class "" }}{{ $action.Class }}{{ end }}' lay-event="{{ $action.Name }}">{{ $action.Display }}</a>
+        {{ end }}
+    </script>
+
+    <div id="out"></div>
+</div>
 
 <script>
-    layui.use('table', function(){
-        var table = layui.table;
+layui.use('table', function(){
+    var table = layui.table;
 
-        table.render({
-            elem: '#{{ .current_model.Name }}'
-            ,url:'/manage/{{ .current_model.Name }}/data'
-            ,title: '用户数据表'
-            ,cols: [[
-                {type: 'checkbox', fixed: 'left'}
-                {{ range $attribute := .current_model.Attributes }}
-    , {field: '{{ $attribute.Name }}', title: '{{ $attribute.Display }}'}
-        {{ end }}
-    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
-    ]]
-    ,page: true
+    table.render({
+        elem: '#{{ .current_model.Name }}'
+        ,url:'/manage/{{ .current_model.Name }}/data'
+        ,toolbar: '#toolbar_{{ .current_model.Name }}'
+        ,title: '用户数据表'
+        ,cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            {{ range $column := .current_model.Table.Columns }}
+            , {field: '{{ $column.Name }}', title: '{{ $column.Display }}'
+                {{ if ne $column.Width 0 }}
+                , width: {{ $column.Width }}
+                {{ end }}
+                {{ if ne $column.Align "" }}
+                , align: {{ $column.Align }}
+                {{ end }}
+            }
+            {{ end }}
+            ,{fixed: 'right', title:'操作', toolbar: '#tool_{{ .current_model.Name }}'}
+        ]]
+        ,page: true
     });
-    });
+
+    table.on('toolbar(test)', function(obj){
+        console.log(obj)
+    })
+
+    table.on('tool(test)', function(obj){
+        $("#out").load("/manage/{{ .current_model.Name }}/form?action="+obj.event);
+        console.log(obj.event, obj.data)
+    })
+});
 </script>

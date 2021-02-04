@@ -1,8 +1,8 @@
-dsn: "root:@(127.0.0.1)/sys"
+dsn: "root:root@(127.0.0.1)/sys"
 
 models:
   - name: jiandan_ooxx
-    title: 图片
+    title: 煎蛋图片
     attributes:
       - name: id
         display: ID
@@ -20,9 +20,19 @@ models:
     table:
       columns:
         - name: id
+          display: ID
+          width: 60
+          align: center
         - name: url
+          display: 地址
         - name: status
+          display: 状态
+          width: 100
+          align: center
         - name: date
+          display: 日期
+          width: 120
+          align: center
       actions:
         - name: create
           display: 创建
@@ -34,7 +44,13 @@ models:
               - name: url
               - name: status
               - name: date
+        - name: batch_delete
+          display: 删除
+          class: layui-btn-danger
       row_actions:
+        - name: view
+          display: 查看
+          class: layui-btn-primary
         - name: edit
           display: 编辑
           type: dialog
@@ -46,9 +62,9 @@ models:
               - name: date
         - name: delete
           display: 删除
+          class: layui-btn-danger
           type: message
-        - name: view
-          display: 查看
+
 
   - name: site
     title: 网站
