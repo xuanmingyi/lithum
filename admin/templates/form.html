@@ -1,4 +1,34 @@
-<form class="layui-form" action="">
-    {{ .current_action.Dialog.Title }}
+<form class="layui-form layui-form-pane" action="" style="padding: 40px;">
+
+{{ range $field := .current_action.Dialog.Fields }}
+<div class="layui-form-item">
+    <label class="layui-form-label">{{ $field.Attr.Display }}</label>
+
+    {{ if eq $field.Attr.Tag "input" }}
+    <div class="layui-input-block">
+        <input type="text" name="{{ $field.Attr.Name }}" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input"
+               value="{{ index $.current_object $field.Attr.Name }}" {{ if eq $field.Disabled true }}disabled=""{{ end }}>
+    </div>
+    {{ end }}
+
+    {{ if eq $field.Attr.Tag "select" }}
+    <div class="layui-input-block">
+        <select name="{{ $field.Attr.Name }}" id="ddd" {{ if eq $field.Disabled true }}disabled=""{{ end }}>
+            {{ range $option := $field.Attr.Options }}
+            <option value="{{ $option.Value }}">{{ $option.Display }} ({{ $option.Value }})</option>
+            {{ end }}
+        </select>
+    </div>
+    {{ end }}
+    
+</div>
+{{ end }}
+
 </form>
 
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render('select');
+    })
+</script>

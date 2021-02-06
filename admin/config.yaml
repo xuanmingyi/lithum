@@ -12,7 +12,12 @@ models:
         tag: input
       - name: status
         display: 状态
-        tag: input
+        tag: select
+        options:
+          - display: 新抓取
+            value: new
+          - display: 已下载
+            value: download
       - name: date
         display: 日期
         tag: input
@@ -47,43 +52,49 @@ models:
         - name: batch_delete
           display: 删除
           class: layui-btn-danger
+          type: dialog
+          dialog:
+            title: 删除
+            fields:
+              - name: id
+              - name: url
+              - name: status
+              - name: date
       row_actions:
         - name: view
           display: 查看
           class: layui-btn-primary
+          type: dialog
+          dialog:
+            title: 查看
+            fields:
+              - name: id
+                disabled: true
+              - name: url
+                disabled: true
+              - name: status
+                disabled: true
+              - name: date
+                disabled: true
         - name: edit
           display: 编辑
           type: dialog
           dialog:
             title: 创建实例
             fields:
+              - name: id
+                disabled: true
               - name: url
               - name: status
               - name: date
         - name: delete
           display: 删除
           class: layui-btn-danger
-          type: message
-
-
-  - name: site
-    title: 网站
-    attributes:
-      - name: id
-        display: ID
-        tag: input
-      - name: name
-        display: 名字
-        tag: input
-      - name: url
-        display: URL
-        tag: input
-
-    table:
-      columns:
-        - name: id
-        - name: name
-        - name: url
-      actions:
-        - name: create
-          display: 创建
+          type: dialog
+          dialog:
+            title: 删除
+            fields:
+              - name: id
+              - name: url
+              - name: status
+              - name: date

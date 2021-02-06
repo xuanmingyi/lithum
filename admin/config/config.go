@@ -30,6 +30,30 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	for i1, model := range Config.Models {
+
+		for i2, action := range model.Table.TableActions {
+			for i3, field := range action.Dialog.Fields {
+				Config.Models[i1].Table.TableActions[i2].Dialog.Fields[i3].Attr = model.FindAttrByName(field.Name)
+			}
+		}
+
+		for i2, action := range model.Table.RowActions {
+			for i3, field := range action.Dialog.Fields {
+				Config.Models[i1].Table.RowActions[i2].Dialog.Fields[i3].Attr = model.FindAttrByName(field.Name)
+			}
+		}
+	}
+}
+
+func (model *Model) FindAttrByName(name string) (attr *Attribute) {
+	for _, model := range model.Attributes {
+		if model.Name == name {
+			return &model
+		}
+	}
+	return nil
 }
 
 func (c *config) InitDB() (err error) {

@@ -1,14 +1,21 @@
 package config
 
-type Attribute struct {
-	Name    string `yaml:"name"`
+type Option struct {
 	Display string `yaml:"display"`
-	Tag     string `yaml:"tag"`
-	Values  map[string]interface{}
+	Value   string `yaml:"value"`
+}
+
+type Attribute struct {
+	Name    string   `yaml:"name"`
+	Display string   `yaml:"display"`
+	Tag     string   `yaml:"tag"`
+	Options []Option `yaml:"options"`
 }
 
 type Field struct {
-	Name string `yaml:"name"`
+	Name     string     `yaml:"name"`
+	Disabled bool       `yaml:"disabled"`
+	Attr     *Attribute `yaml:"-"`
 }
 
 type Dialog struct {
@@ -58,9 +65,4 @@ func (model *Model) GetAction(action_name string) (action *Action) {
 	}
 
 	return nil
-}
-
-func LoadModel(name string) (m *Model, err error) {
-	m = &Model{Name: name}
-	return m, nil
 }

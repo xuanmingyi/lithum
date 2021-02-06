@@ -26,6 +26,33 @@ func ManageHandler(c *gin.Context) {
 // desc: 表单数据
 func FormHandler(c *gin.Context) {
 	name := c.Param("name")
+	id, _ := strconv.Atoi(c.Query("id"))
+
+	current_object := make(map[string]interface{})
+
+	rows, err := config.Config.DB.Query(fmt.Sprintf("SELECT * FROM %s WHERE id = %d", name, id))
+	if err != nil {
+		panic(err)
+	}
+
+	columns, _ := rows.Columns()
+	column_length := len(columns)
+
+	values := make([]sql.RawBytes, column_length)
+	line_cache := make([]interface{}, column_length)
+	for index, _ := range line_cache {
+		line_cache[index] = &values[index]
+	}
+
+	for rows.Next() {
+		rows.Scan(line_cache...)
+		for index, value := range values {
+			current_object[columns[index]] = string(value)
+		}
+	}
+
+	fmt.Println(current_object)
+
 	current_model := config.Config.GetModel(name)
 
 	action_name := c.Query("action")
@@ -36,6 +63,7 @@ func FormHandler(c *gin.Context) {
 		"title":          "ssss",
 		"current_model":  current_model,
 		"current_action": current_action,
+		"current_object": current_object,
 	})
 }
 
