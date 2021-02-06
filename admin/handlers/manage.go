@@ -51,8 +51,6 @@ func FormHandler(c *gin.Context) {
 		}
 	}
 
-	fmt.Println(current_object)
-
 	current_model := config.Config.GetModel(name)
 
 	action_name := c.Query("action")

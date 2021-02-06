@@ -123,7 +123,7 @@ func eventSet(L *lua.LState) int {
 	names := splitName(L.CheckString(2))
 
 	if len(names) == 0 {
-		panic("error")
+		panic("errno")
 		return 0
 	}
 

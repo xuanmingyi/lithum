@@ -15,10 +15,10 @@ import (
 func TestRequestNoMethod(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request()
+		response, errno = http.request()
 
 		assert_equal(nil, response)
-		assert_contains('unsupported protocol scheme ""', error)
+		assert_contains('unsupported protocol scheme ""', errno)
 	`); err != nil {
 		t.Errorf("Failed to evaluate script: %s", err)
 	}
@@ -27,10 +27,10 @@ func TestRequestNoMethod(t *testing.T) {
 func TestRequestNoUrl(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("get")
+		response, errno = http.request("get")
 
 		assert_equal(nil, response)
-		assert_contains('unsupported protocol scheme ""', error)
+		assert_contains('unsupported protocol scheme ""', errno)
 	`); err != nil {
 		t.Errorf("Failed to evaluate script: %s", err)
 	}
@@ -85,7 +85,7 @@ func TestRequestGet(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("get", "http://`+listener.Addr().String()+`")
+		response, errno = http.request("get", "http://`+listener.Addr().String()+`")
 
 		assert_equal('Requested GET / with query ""', response['body'])
 		assert_equal(200, response['status_code'])
@@ -102,7 +102,7 @@ func TestRequestGetWithRedirect(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("get", "http://`+listener.Addr().String()+`/redirect")
+		response, errno = http.request("get", "http://`+listener.Addr().String()+`/redirect")
 
 		assert_equal('Requested GET / with query ""', response['body'])
 		assert_equal(200, response['status_code'])
@@ -118,7 +118,7 @@ func TestRequestPostForm(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("post", "http://`+listener.Addr().String()+`", {
+		response, errno = http.request("post", "http://`+listener.Addr().String()+`", {
 			form="username=bob&password=secret"
 		})
 
@@ -138,7 +138,7 @@ func TestRequestHeaders(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("post", "http://`+listener.Addr().String()+`", {
+		response, errno = http.request("post", "http://`+listener.Addr().String()+`", {
 			headers={
 				["Content-Type"]="application/json"
 			}
@@ -160,7 +160,7 @@ func TestRequestQuery(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.request("get", "http://`+listener.Addr().String()+`", {
+		response, errno = http.request("get", "http://`+listener.Addr().String()+`", {
 			query="page=2"
 		})
 
@@ -176,7 +176,7 @@ func TestGet(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.get("http://`+listener.Addr().String()+`", {
+		response, errno = http.get("http://`+listener.Addr().String()+`", {
 			query="page=1"
 		})
 
@@ -195,7 +195,7 @@ func TestDelete(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.delete("http://`+listener.Addr().String()+`", {
+		response, errno = http.delete("http://`+listener.Addr().String()+`", {
 			query="page=1"
 		})
 
@@ -214,7 +214,7 @@ func TestHead(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.head("http://`+listener.Addr().String()+`/head", {
+		response, errno = http.head("http://`+listener.Addr().String()+`/head", {
 			query="page=1"
 		})
 
@@ -231,7 +231,7 @@ func TestPost(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.post("http://`+listener.Addr().String()+`", {
+		response, errno = http.post("http://`+listener.Addr().String()+`", {
 			body="username=bob&password=secret"
 		})
 
@@ -251,7 +251,7 @@ func TestPatch(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.patch("http://`+listener.Addr().String()+`", {
+		response, errno = http.patch("http://`+listener.Addr().String()+`", {
 			body='{"username":"bob"}',
 			headers={
 				["Content-Type"]="application/json"
@@ -274,7 +274,7 @@ func TestPut(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.put("http://`+listener.Addr().String()+`", {
+		response, errno = http.put("http://`+listener.Addr().String()+`", {
 			body="username=bob&password=secret",
 			headers={
 				["Content-Type"]="application/x-www-form-urlencoded"
@@ -297,7 +297,7 @@ func TestResponseCookies(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.get("http://`+listener.Addr().String()+`/set_cookie")
+		response, errno = http.get("http://`+listener.Addr().String()+`/set_cookie")
 
 		assert_equal('Cookie set!', response["body"])
 		assert_equal('12345', response["cookies"]["session_id"])
@@ -312,7 +312,7 @@ func TestRequestCookies(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.get("http://`+listener.Addr().String()+`/get_cookie", {
+		response, errno = http.get("http://`+listener.Addr().String()+`/get_cookie", {
 			cookies={
 				["session_id"]="test"
 			}
@@ -331,7 +331,7 @@ func TestResponseBodySize(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.get("http://`+listener.Addr().String()+`/")
+		response, errno = http.get("http://`+listener.Addr().String()+`/")
 
 		assert_equal(29, response["body_size"])
 	`); err != nil {
@@ -345,7 +345,7 @@ func TestResponseBody(t *testing.T) {
 
 	if err := evalLua(t, `
 		local http = require("http")
-		response, error = http.get("http://`+listener.Addr().String()+`/")
+		response, errno = http.get("http://`+listener.Addr().String()+`/")
 
 		assert_equal("Requested XXX / with query \"\"", string.gsub(response.body, "GET", "XXX"))
 	`); err != nil {
@@ -360,10 +360,10 @@ func TestResponseUrl(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
 
-		response, error = http.get("http://`+listener.Addr().String()+`/redirect")
+		response, errno = http.get("http://`+listener.Addr().String()+`/redirect")
 		assert_equal("http://`+listener.Addr().String()+`/", response["url"])
 
-		response, error = http.get("http://`+listener.Addr().String()+`/get_cookie")
+		response, errno = http.get("http://`+listener.Addr().String()+`/get_cookie")
 		assert_equal("http://`+listener.Addr().String()+`/get_cookie", response["url"])
 	`); err != nil {
 		t.Errorf("Failed to evaluate script: %s", err)
@@ -376,10 +376,10 @@ func TestTimeoutShort(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
 
-		response, error = http.get("http://`+listener.Addr().String()+`/delayed", {
+		response, errno = http.get("http://`+listener.Addr().String()+`/delayed", {
 			timeout="1ms"
 		})
-		assert_contains('context deadline exceeded', error)
+		assert_contains('context deadline exceeded', errno)
 	`); err != nil {
 		t.Errorf("Failed to evaluate script: %s", err)
 	}
@@ -391,7 +391,7 @@ func TestTimeoutLong(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
 
-		response, error = http.post("http://`+listener.Addr().String()+`/delayed", {
+		response, errno = http.post("http://`+listener.Addr().String()+`/delayed", {
 			timeout="1h"
 		})
 		assert_contains('ok', response.body)
@@ -406,10 +406,10 @@ func TestBadlyFormattedTimeout(t *testing.T) {
 	if err := evalLua(t, `
 		local http = require("http")
 
-		response, error = http.get("http://`+listener.Addr().String()+`/delayed", {
+		response, errno = http.get("http://`+listener.Addr().String()+`/delayed", {
 			timeout="not a duration"
 		})
-		assert_contains('invalid duration', error)
+		assert_contains('invalid duration', errno)
 	`); err != nil {
 		t.Errorf("Failed to evaluate script: %s", err)
 	}
