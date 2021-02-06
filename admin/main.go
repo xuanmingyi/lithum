@@ -24,5 +24,5 @@ func main() {
 		router.HandleContext(c)
 	})
 
-	router.Run()
+	router.Run("0.0.0.0:8081")
 }
