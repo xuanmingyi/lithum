@@ -1,12 +1,12 @@
+var html=`
 <form class="layui-form layui-form-pane" action="" style="padding: 40px;">
-
 {{ range $field := .current_action.Dialog.Fields }}
 <div class="layui-form-item">
     <label class="layui-form-label">{{ $field.Attr.Display }}</label>
 
     {{ if eq $field.Attr.Tag "input" }}
     <div class="layui-input-block">
-        <input type="text" name="{{ $field.Attr.Name }}" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input"
+        <input type="text" name="{{ $field.Attr.Name }}" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input {{ if eq $field.Disabled true }}layui-disabled{{ end }}"
                value="{{ index $.current_object $field.Attr.Name }}" {{ if eq $field.Disabled true }}disabled=""{{ end }}>
     </div>
     {{ end }}
@@ -23,12 +23,30 @@
     
 </div>
 {{ end }}
-
 </form>
+`
 
-<script>
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render('select');
-    })
-</script>
+layer.open({
+    type: 1
+    ,title: {{ if eq .current_action.Dialog.Title ""}}false{{ else }}"{{ .current_action.Dialog.Title }}"{{ end }} //不显示标题栏
+    ,closeBtn: false
+    ,area: ['680px', '400px' ]
+    ,shade: 0.8
+    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+    ,btn: ['确定', '关闭']
+    ,btnAlign: 'r'
+    ,moveType: 1 //拖拽模式，0或者1
+    ,content: html
+    ,success: function(layero){
+        var btn = layero.find('.layui-layer-btn');
+        btn.find('.layui-layer-btn0').attr({
+            href: 'http://www.layui.com/'
+            ,target: '_blank'
+        });
+    }
+});
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render('select');
+})

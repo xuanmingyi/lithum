@@ -66,7 +66,7 @@ models:
           class: layui-btn-primary
           type: dialog
           dialog:
-            title: 查看
+            title: 查看实例
             fields:
               - name: id
                 disabled: true
@@ -80,7 +80,10 @@ models:
           display: 编辑
           type: dialog
           dialog:
-            title: 创建实例
+            title: 编辑实例
+            buttons:
+              - name: update_one
+                display: 更新
             fields:
               - name: id
                 disabled: true
@@ -92,9 +95,16 @@ models:
           class: layui-btn-danger
           type: dialog
           dialog:
-            title: 删除
+            title: 删除实例
+            buttons:
+              - name: delete_one
+                display: 删除
             fields:
               - name: id
+                disabled: true
               - name: url
+                disabled: true
               - name: status
+                disabled: true
               - name: date
+                disabled: true

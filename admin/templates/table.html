@@ -88,30 +88,7 @@ layui.use('table', function(){
     });
 
     table.on('tool(test)', function(obj){
-        $.ajax({
-            url: "/manage/{{ .current_model.Name }}/form?id=" + obj.data.id + "&action="+obj.event,
-            success: function(response) {
-                layer.open({
-                    type: 1
-                    ,title: false //不显示标题栏
-                    ,closeBtn: false
-                    ,area: ['680px', '400px' ]
-                    ,shade: 0.8
-                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                    ,btn: ['确定', '取消']
-                    ,btnAlign: 'r'
-                    ,moveType: 1 //拖拽模式，0或者1
-                    ,content: response
-                    ,success: function(layero){
-                        var btn = layero.find('.layui-layer-btn');
-                        btn.find('.layui-layer-btn0').attr({
-                            href: 'http://www.layui.com/'
-                            ,target: '_blank'
-                        });
-                    }
-                });
-            }
-        });
+        $.getScript("/manage/{{ .current_model.Name }}/form?id=" + obj.data.id + "&action="+obj.event);
     });
 });
 </script>

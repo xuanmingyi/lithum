@@ -18,9 +18,15 @@ type Field struct {
 	Attr     *Attribute `yaml:"-"`
 }
 
+type Button struct {
+	Name    string `yaml:"name"`
+	Display string `yaml:"display"`
+}
+
 type Dialog struct {
-	Title  string  `yaml:"title"`
-	Fields []Field `yaml:"fields"`
+	Title   string   `yaml:"title"`
+	Fields  []Field  `yaml:"fields"`
+	Buttons []Button `yaml:"buttons"`
 }
 
 type Action struct {
