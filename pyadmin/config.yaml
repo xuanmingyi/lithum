@@ -1,0 +1,110 @@
+dsn: "root:root@(127.0.0.1)/sys"
+
+models:
+  - name: jiandan_ooxx
+    title: 煎蛋图片
+    attributes:
+      - name: id
+        display: ID
+        tag: input
+      - name: url
+        display: 地址
+        tag: input
+      - name: status
+        display: 状态
+        tag: select
+        options:
+          - display: 新抓取
+            value: new
+          - display: 已下载
+            value: download
+      - name: date
+        display: 日期
+        tag: input
+
+    table:
+      columns:
+        - name: id
+          display: ID
+          width: 60
+          align: center
+        - name: url
+          display: 地址
+        - name: status
+          display: 状态
+          width: 100
+          align: center
+        - name: date
+          display: 日期
+          width: 120
+          align: center
+      actions:
+        - name: create
+          display: 创建
+          type: dialog
+          dialog:
+            title: 创建实例
+            fields:
+              - name: id
+              - name: url
+              - name: status
+              - name: date
+        - name: batch_delete
+          display: 删除
+          class: layui-btn-danger
+          type: dialog
+          dialog:
+            title: 删除
+            fields:
+              - name: id
+              - name: url
+              - name: status
+              - name: date
+      row_actions:
+        - name: view
+          display: 查看
+          class: layui-btn-primary
+          type: dialog
+          dialog:
+            title: 查看实例
+            fields:
+              - name: id
+                disabled: true
+              - name: url
+                disabled: true
+              - name: status
+                disabled: true
+              - name: date
+                disabled: true
+        - name: edit
+          display: 编辑
+          type: dialog
+          dialog:
+            title: 编辑实例
+            buttons:
+              - name: update_one
+                display: 更新
+            fields:
+              - name: id
+                disabled: true
+              - name: url
+              - name: status
+              - name: date
+        - name: delete
+          display: 删除
+          class: layui-btn-danger
+          type: dialog
+          dialog:
+            title: 删除实例
+            buttons:
+              - name: delete_one
+                display: 删除
+            fields:
+              - name: id
+                disabled: true
+              - name: url
+                disabled: true
+              - name: status
+                disabled: true
+              - name: date
+                disabled: true
