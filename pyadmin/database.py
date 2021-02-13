@@ -1,5 +1,7 @@
 # https://blog.csdn.net/woshiaotian/article/details/51442876
-import os
+import pymysql
+from config import *
+
 
 class Singleton(type):
     _instances = {}
@@ -12,7 +14,15 @@ class Singleton(type):
 
 class Database(metaclass=Singleton):
     def __init__(self, *args, **kwargs):
-        print(kwargs.get('dsn'))
+        self.db = pymysql.connect(
+            host=kwargs.get('host', DATABASE_HOST),
+            user=kwargs.get('user', DATABASE_USER),
+            password=kwargs.get('password', DATABASE_PASSWORD),
+            database=kwargs.get('name', DATABASE_NAME),
+            charset='utf8mb4')
+
+    def cursor(self):
+        return self.db.cursor(pymysql.cursors.DictCursor)
 
 
 class Redis(metaclass=Singleton):

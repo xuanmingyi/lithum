@@ -36,3 +36,6 @@ frontend.tar.gz
 data/nginx/html/favicon.ico
 data/nginx/html/index.html
 data/nginx/html/static/
+
+venv
+__pycache__

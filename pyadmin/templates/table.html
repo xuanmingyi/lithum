@@ -1,0 +1,97 @@
+<div style="padding: 15px;padding-left: 220px;">
+    <table class="layui-hide" id="{{ current_model.name }}" lay-filter="test"></table>
+
+    <script type="text/html" id="toolbar_{{ current_model.name }}">
+        <div class="layui-input-inline">
+            <select name="modules" lay-verify="required" lay-search="">
+                <option value="">直接选择或搜索选择</option>
+                {% for column in current_model.table.columns %}
+                <option value="{{ column.name }}">{{ column.display }}</option>
+                {% end %}
+            </select>
+        </div>
+        <div class="layui-input-inline" style="width: 300px;">
+            <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+
+        <div class="layui-input-inline" style="float:right;">
+            {% for action in current_model.table.actions %}
+            <a class='layui-btn layui-btn-sm {% if  action._class != "" %}{{ action._class }}{% end %}' lay-event="{{ action.name }}">{{ action.display }}</a>
+            {% end %}
+        </div>
+    </script>
+
+    <script type="text/html" id="tool_{{ current_model.name }}">
+        {% for action in current_model.table.row_actions %}
+        <a class='layui-btn layui-btn-xs {% if action._class != "" %}{{ action._class }}{% end %}' lay-event="{{ action.name }}">{{ action.display }}</a>
+        {% end %}
+    </script>
+</div>
+
+<script>
+layui.use('table', function(){
+    var table = layui.table;
+    var layer = layui.layer;
+    var current_obj = null;
+
+    table.render({
+        elem: '#{{ current_model.name }}'
+        ,url:'/manage/{{ current_model.name }}/data'
+        ,toolbar: '#toolbar_{{ current_model.name }}'
+        ,title: '用户数据表'
+        ,cols: [[
+            {type: 'checkbox', fixed: 'left'}
+            {% for column in current_model.table.columns %}
+            , {field: '{{ column.name }}', title: '{{ column.display }}'
+              {% if column.width != 0 %}
+              , width: {{ column.width }}
+              {% end %}
+              {% if column.align != '' %}
+              , align: '{{ column.align }}'
+              {% end %}
+              {% if column.templet != '' %}
+              , templet: {% raw column.templet %}
+              {% end %}
+            }
+            {% end %}
+            ,{fixed: 'right', title:'操作', toolbar: '#tool_{{ current_model.name }}'}
+        ]]
+        ,page: true
+    });
+
+    table.on('toolbar(test)', function(obj) {
+        $.ajax({
+            url: "/manage/{{ current_model.name }}/form?action="+obj.event,
+            success: function(response) {
+                console.log(response);
+
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '300px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    ,btn: ['火速围观', '残忍拒绝']
+                    ,btnAlign: 'c'
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
+                    ,success: function(layero){
+                        var btn = layero.find('.layui-layer-btn');
+                        btn.find('.layui-layer-btn0').attr({
+                            href: 'http://www.layui.com/'
+                            ,target: '_blank'
+                        });
+                    }
+                });
+
+                console.log("ssss")
+            }
+        });
+    });
+
+    table.on('tool(test)', function(obj){
+        $.getScript("/manage/{{ current_model.name }}/form?id=" + obj.data.id + "&action="+obj.event);
+    });
+});
+</script>
