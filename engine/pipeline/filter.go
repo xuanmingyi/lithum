@@ -14,6 +14,10 @@ type Filter struct {
 	Code string
 }
 
+func error(L *lua.LState) int {
+	return 0
+}
+
 func (f *Filter) Start(input chan models.Event, output chan models.Event) {
 	var event models.Event
 
@@ -22,6 +26,8 @@ func (f *Filter) Start(input chan models.Event, output chan models.Event) {
 		if len(event.Tags) == 0 {
 			L := lua.NewState()
 			libs.Preload(L)
+
+			L.SetGlobal("error", L.NewFunction(error))
 
 			gluasql.Preload(L)
 			L.PreloadModule("scrape", gluahttpscrape.NewHttpScrapeModule().Loader)
