@@ -24,6 +24,13 @@ class Database(metaclass=Singleton):
     def cursor(self):
         return self.db.cursor(pymysql.cursors.DictCursor)
 
+    def get_by_id(self, model_name, id):
+        sql = 'SELECT * FROM {} WHERE id = {}'.format(model_name, id)
+        cursor = self.cursor()
+        cursor.execute(sql)
+        current_object = cursor.fetchone()
+        return current_object
+
 
 class Redis(metaclass=Singleton):
     def __init__(self, *args, **kwargs):

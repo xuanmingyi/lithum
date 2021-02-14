@@ -1,17 +1,22 @@
 class Action(object):
-    class Field(object):
-        def __init__(self, *args, **kwargs):
-            self.name = kwargs.get('name')
-            self.disabled = kwargs.get('disabled', False)
-            self.attr = kwargs.get('attr', {})
-
-        @classmethod
-        def create(cls, *args, **kwargs):
-            return cls(*args, **kwargs)
 
     class Dialog(object):
+
+        class Field(object):
+            def __init__(self, *args, **kwargs):
+                self.name = kwargs.get('name')
+                self.disabled = kwargs.get('disabled', False)
+                self.attr = None
+
+            @classmethod
+            def create(cls, *args, **kwargs):
+                return cls(*args, **kwargs)
+
         def __init__(self, *args, **kwargs):
             self.fields = []
+            for field in kwargs.get('fields'):
+                self.fields.append(self.Field.create(**field))
+            self.title = kwargs.get('title')
 
         @classmethod
         def create(cls, *args, **kwargs):
@@ -23,12 +28,18 @@ class Action(object):
         self._class = kwargs.get('class')
         self.type = kwargs.get('type')
         if self.type == 'dialog':
-            self.dialog = kwargs.get('dialog', {})
+            self.dialog = self.Dialog.create(**kwargs.get('dialog'))
 
     @classmethod
     def create(cls, *args, **kwargs):
         return cls(*args, **kwargs)
 
+
+    def load_model(self, model):
+        for field in  self.dialog.fields:
+            for attr in model.attributes:
+                if field.name == attr.name:
+                    field.attr = attr
 
 class Table(object):
     class Column(object):
@@ -97,7 +108,13 @@ class Model(object):
 
     @classmethod
     def create(cls, *args, **kwargs):
-        return cls(*args, **kwargs)
+        model = cls(*args, **kwargs)
+        for action in model.table.actions:
+            action.load_model(model)
+        for action in model.table.row_actions:
+            action.load_model(model)
+        return model
+
 
 def load_models():
     jiandan_ooxx_model = {

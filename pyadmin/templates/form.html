@@ -2,7 +2,8 @@ var html=`
 <form class="layui-form layui-form-pane" action="" style="padding: 40px;">
 {% for field in current_action.dialog.fields %}
 <div class="layui-form-item">
-    <label class="layui-form-label">dddd</label>
+
+    <label class="layui-form-label">{{ field.attr.display }}</label>
 
     {% if  field.attr.tag == "input" %}
     <div class="layui-input-block">
@@ -10,17 +11,17 @@ var html=`
                value="{{ current_object[field.attr.name] }}" {% if field.disabled %}disabled=""{% end %}>
     </div>
     {% end %}
-{#
-    {{ if eq $field.Attr.Tag "select" }}
+
+    {% if field.attr.tag == "select" %}
     <div class="layui-input-block">
-        <select name="{{ $field.Attr.Name }}" id="ddd" {{ if eq $field.Disabled true }}disabled=""{{ end }}>
-            {{ range $option := $field.Attr.Options }}
-            <option value="{{ $option.Value }}">{{ $option.Display }} ({{ $option.Value }})</option>
-            {{ end }}
+        <select name="{{ field.attr.name }}" id="ddd" {%  if field.disabled %}disabled=""{% end %}>
+            {% for option in field.attr.options %}
+            <option value="{{ option.value }}">{{ option.display }} ({{ option.value }})</option>
+            {% end %}
         </select>
     </div>
-    {{ end }}
-  #}
+    {% end %}
+
 </div>
 {% end %}
 </form>

@@ -79,6 +79,9 @@ class FormHandler(tornado.web.RequestHandler):
         id = self.get_argument('id')
         action_name = self.get_argument('action')
 
+
+        current_object =self.db.get_by_id(name, id)
+
         # 获取model
         models = load_models()
         current_model = None
@@ -98,7 +101,8 @@ class FormHandler(tornado.web.RequestHandler):
 
         kwargs = {
             'current_model': current_model,
-            'current_action': current_action
+            'current_action': current_action,
+            'current_object': current_object
         }
         self.render('form.html', **kwargs)
 
