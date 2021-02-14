@@ -70,18 +70,53 @@ class TableDataHandler(tornado.web.RequestHandler):
             'count': count['COUNT(id)'], 'data': data}))
 
 
+class FormHandler(tornado.web.RequestHandler):
+    def initialize(self, db):
+        self.db = db
+
+    def get(self, name):
+        kwargs = {}
+        id = self.get_argument('id')
+        action_name = self.get_argument('action')
+
+        # 获取model
+        models = load_models()
+        current_model = None
+        for _model in models:
+            if _model.name == name:
+                current_model = _model
+
+        current_action = None
+
+        for action in current_model.table.actions:
+            if action.name == action_name:
+                current_action = action
+        else:
+            for action in current_model.table.row_actions:
+                if action.name == action_name:
+                    current_action = action
+
+        kwargs = {
+            'current_model': current_model,
+            'current_action': current_action
+        }
+        self.render('form.html', **kwargs)
+
+
 def make_app():
     initialize_options = {
         'db': Database(),
     }
     options = {
         'template_path': template_path,
-        'static_path': static_path
+        'static_path': static_path,
+        'debug': True
     }
     return tornado.web.Application([
         (r'/', IndexHandler),
         (r'/manage/(?P<name>.+)/index', ManageHandler, dict(initialize_options)),
-        (r'/manage/(?P<name>.+)/data', TableDataHandler, dict(initialize_options))
+        (r'/manage/(?P<name>.+)/data', TableDataHandler, dict(initialize_options)),
+        (r'/manage/(?P<name>.+)/form', FormHandler, dict(initialize_options))
     ], **options)
 
 

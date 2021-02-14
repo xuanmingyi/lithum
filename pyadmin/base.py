@@ -3,16 +3,27 @@ class Action(object):
         def __init__(self, *args, **kwargs):
             self.name = kwargs.get('name')
             self.disabled = kwargs.get('disabled', False)
+            self.attr = kwargs.get('attr', {})
 
         @classmethod
         def create(cls, *args, **kwargs):
             return cls(*args, **kwargs)
 
+    class Dialog(object):
+        def __init__(self, *args, **kwargs):
+            self.fields = []
+
+        @classmethod
+        def create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name')
         self.display = kwargs.get('display')
         self._class = kwargs.get('class')
+        self.type = kwargs.get('type')
+        if self.type == 'dialog':
+            self.dialog = kwargs.get('dialog', {})
 
     @classmethod
     def create(cls, *args, **kwargs):
