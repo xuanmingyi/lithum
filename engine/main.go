@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"engine/metric"
 	"fmt"
 	"os"
 	"os/signal"
@@ -27,34 +26,13 @@ func waitSingals(ctx context.Context) error {
 func main() {
 	log.Log.Info("启动程序")
 
-	var pipelines []*global.Pipeline
+	defer global.Global.Cancel()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	global.Global.StartAll()
 
-	global.Global.GlobalCtx = ctx
+	global.Global.WaitAll()
 
-	for _, pipeConf := range global.Global.PipeConfs {
-		pipeline, err := global.LoadPipeline(&pipeConf)
-		if err != nil {
-			panic(err)
-		}
-		pipelines = append(pipelines, pipeline)
-	}
-
-	for _, pipeline := range pipelines {
-		go pipeline.Start()
-	}
-
-	if global.Global.EnableMetrics {
-		go metric.Run()
-	}
-
-	for _, pipeline := range pipelines {
-		pipeline.Wait()
-	}
-
-	waitSingals(ctx)
+	waitSingals(global.Global.GlobalCtx)
 
 	log.Log.Info("程序退出")
 }

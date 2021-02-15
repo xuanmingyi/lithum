@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"engine/log"
 	"engine/models"
-	"engine/pipeline"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/sirupsen/logrus"
@@ -22,7 +21,7 @@ type OutputMySQL struct {
 	Field string
 }
 
-func InitHandler(ctx context.Context, values map[string]interface{}) (o pipeline.Output, err error) {
+func InitHandler(ctx context.Context, values map[string]interface{}) (o interface{ Start(chan models.Event) }, err error) {
 	output := new(OutputMySQL)
 	output.Ctx = ctx
 	output.DSN = values["dsn"].(string)

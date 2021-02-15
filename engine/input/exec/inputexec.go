@@ -2,8 +2,8 @@ package inputexec
 
 import (
 	"context"
+	"engine/global"
 	"engine/models"
-	"engine/pipeline"
 	"os/exec"
 	"strconv"
 	"time"
@@ -19,7 +19,7 @@ type InputExec struct {
 	Interval int
 }
 
-func InitHandler(ctx context.Context, values map[string]string) (input pipeline.Input, err error) {
+func InitHandler(ctx context.Context, values map[string]string) (input global.Input, err error) {
 	inputExec := new(InputExec)
 	inputExec.Ctx = ctx
 	inputExec.Interval, err = strconv.Atoi(values["interval"])

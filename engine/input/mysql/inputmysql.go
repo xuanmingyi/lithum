@@ -2,8 +2,8 @@ package inputmysql
 
 import (
 	"context"
+	"engine/global"
 	"engine/models"
-	"engine/pipeline"
 	"time"
 
 	"database/sql"
@@ -20,7 +20,7 @@ type InputMySQL struct {
 	Code     string `yaml:"code"`
 }
 
-func InitHandler(ctx context.Context, values map[string]interface{}) (pipeline.Input, error) {
+func InitHandler(ctx context.Context, values map[string]interface{}) (global.Input, error) {
 	input := new(InputMySQL)
 	input.Ctx = ctx
 	input.Interval = values["interval"].(int)

@@ -3,7 +3,6 @@ package inputhttp
 import (
 	"context"
 	"engine/models"
-	"engine/pipeline"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -19,7 +18,7 @@ type InputHttp struct {
 	URL      string `yaml:"url"`
 }
 
-func InitHandler(ctx context.Context, values map[string]interface{}) (i pipeline.Input, err error) {
+func InitHandler(ctx context.Context, values map[string]interface{}) (i interface{ Start(chan models.Event) }, err error) {
 	input := new(InputHttp)
 	input.Ctx = ctx
 	input.Interval = values["interval"].(int)

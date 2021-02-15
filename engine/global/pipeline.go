@@ -3,7 +3,6 @@ package global
 import (
 	"context"
 	"engine/models"
-	"engine/pipeline"
 	"io/ioutil"
 	"path"
 	"sync"
@@ -11,14 +10,22 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type Input interface {
+	Start(chan models.Event)
+}
+
+type Output interface {
+	Start(chan models.Event)
+}
+
 type Pipeline struct {
 	Name       string
 	InputRaw   string
 	FilterRaw  string
 	OutputRaw  string
-	Inputs     []pipeline.Input
-	Filter     pipeline.Filter
-	Outputs    []pipeline.Output
+	Inputs     []Input
+	Filter     Filter
+	Outputs    []Output
 	InputChan  chan models.Event
 	OutputChan chan models.Event
 	wg         sync.WaitGroup
@@ -44,15 +51,15 @@ func (p *Pipeline) Wait() {
 	p.wg.Wait()
 }
 
-func ReadFile(pipeConf *pipeConfig, name string) string {
-	content, err := ioutil.ReadFile(path.Join(pipeConf.Path, name))
+func ReadFile(_path string, name string) string {
+	content, err := ioutil.ReadFile(path.Join(_path, name))
 	if err != nil {
 		panic(err)
 	}
 	return string(content)
 }
 
-func LoadPipeline(pipeConf *pipeConfig) (pipeline *Pipeline, err error) {
+func LoadPipeline(name string, _path string) (pipeline *Pipeline, err error) {
 
 	pipeline = new(Pipeline)
 
@@ -61,13 +68,13 @@ func LoadPipeline(pipeConf *pipeConfig) (pipeline *Pipeline, err error) {
 	pipeline.InputChan = make(chan models.Event, 1000)
 	pipeline.OutputChan = make(chan models.Event, 1000)
 
-	pipeline.Name = pipeConf.Name
+	pipeline.Name = name
 
 	// Read Files
-	pipeline.InputRaw = ReadFile(pipeConf, "input.yaml")
-	pipeline.FilterRaw = ReadFile(pipeConf, "filter.lua")
+	pipeline.InputRaw = ReadFile(_path, "input.yaml")
+	pipeline.FilterRaw = ReadFile(_path, "filter.lua")
 	pipeline.Filter.Code = pipeline.FilterRaw
-	pipeline.OutputRaw = ReadFile(pipeConf, "output.yaml")
+	pipeline.OutputRaw = ReadFile(_path, "output.yaml")
 
 	// Load Input
 	var inputConfigs []map[string]interface{}

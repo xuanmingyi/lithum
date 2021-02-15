@@ -3,7 +3,6 @@ package inputcron
 import (
 	"context"
 	"engine/models"
-	"engine/pipeline"
 	"time"
 )
 
@@ -14,7 +13,7 @@ type InputCron struct {
 	Interval int
 }
 
-func InitHandler(ctx context.Context, values map[string]interface{}) (input pipeline.Input, err error) {
+func InitHandler(ctx context.Context, values map[string]interface{}) (i interface{ Start(chan models.Event) }, err error) {
 	inputCron := new(InputCron)
 	inputCron.Ctx = ctx
 	inputCron.Interval = values["interval"].(int)

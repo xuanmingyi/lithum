@@ -3,7 +3,6 @@ package outputsqlite
 import (
 	"context"
 	"engine/models"
-	"engine/pipeline"
 	"fmt"
 )
 
@@ -15,7 +14,7 @@ type OutputSQLite struct {
 
 const ModuleName = "sqlite"
 
-func InitHandler(ctx context.Context, values map[string]interface{}) (o pipeline.Output, err error) {
+func InitHandler(ctx context.Context, values map[string]interface{}) (o interface{ Start(chan models.Event) }, err error) {
 	output := new(OutputSQLite)
 	output.Ctx = ctx
 	output.DSN = values["dsn"].(string)
