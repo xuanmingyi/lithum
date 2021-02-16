@@ -38,9 +38,11 @@ func LuaStateFactory() (L *lua.LState) {
 	// 加载 github.com/vadv/gopher-lua-libs
 	libs.Preload(L)
 
-	fmt.Println(Global.LibPath)
-
 	L.SetGlobal("lib_path", lua.LString(Global.LibPath))
+	L.SetGlobal("database_driver", lua.LString(Global.Database.Driver))
+	L.SetGlobal("database_dsn", lua.LString(Global.Database.DSN))
+	L.SetGlobal("debug", lua.LBool(Global.Debug))
+	L.SetGlobal("output_path", lua.LString(Global.OutputPath))
 
 	// 其他加载
 	gluasql.Preload(L)

@@ -13,6 +13,9 @@ import (
 
 // 全局结构
 type global struct {
+	// Debug
+	Debug bool `yaml:"debug"`
+
 	// 配置文件
 	PipelineConfs []struct {
 		Name string `yaml:"name"`
@@ -24,7 +27,8 @@ type global struct {
 		DSN    string `yaml:"dsn""`
 	} `yaml:"database"`
 
-	LibPath string `yaml:"lib_path"`
+	LibPath    string `yaml:"lib_path"`
+	OutputPath string `yaml:"output_path"`
 
 	Pipelines []*Pipeline `yaml:"-"`
 
@@ -52,6 +56,38 @@ func init() {
 	err = yaml.Unmarshal(content, &Global)
 	if err != nil {
 		panic(err)
+	}
+
+	// merge local config
+	var localGlobal global
+	content, err = ioutil.ReadFile("pipelines/engine.local.yaml")
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(content, &localGlobal)
+	if err != nil {
+		panic(err)
+	}
+
+	if localGlobal.Database.Driver != "" {
+		Global.Database.Driver = localGlobal.Database.Driver
+	}
+
+	if localGlobal.Database.DSN != "" {
+		Global.Database.DSN = localGlobal.Database.DSN
+	}
+
+	if localGlobal.LibPath != "" {
+		Global.LibPath = localGlobal.LibPath
+	}
+
+	if localGlobal.PipelineConfs != nil {
+		Global.PipelineConfs = localGlobal.PipelineConfs
+	}
+
+	if localGlobal.OutputPath != "" {
+		Global.OutputPath = localGlobal.OutputPath
 	}
 
 	// 初始化cancelCtx
