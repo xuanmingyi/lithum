@@ -30,6 +30,8 @@ type global struct {
 	LibPath    string `yaml:"lib_path"`
 	OutputPath string `yaml:"output_path"`
 
+	HttpProxy string `yaml:"http_proxy"`
+
 	Pipelines []*Pipeline `yaml:"-"`
 
 	GlobalCtx context.Context    `yaml:"-"`

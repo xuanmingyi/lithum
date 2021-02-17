@@ -3,6 +3,7 @@ module engine
 go 1.14
 
 require (
+	github.com/felipejfc/gluahttpscrape v0.0.0-20170525191632-10580c4a38f9 // indirect
 	github.com/go-redis/redis/v8 v8.4.8
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/junhsieh/goexamples v0.0.0-20190721045834-1c67ae74caa6 // indirect

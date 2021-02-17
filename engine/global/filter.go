@@ -43,6 +43,7 @@ func LuaStateFactory() (L *lua.LState) {
 	L.SetGlobal("database_dsn", lua.LString(Global.Database.DSN))
 	L.SetGlobal("debug", lua.LBool(Global.Debug))
 	L.SetGlobal("output_path", lua.LString(Global.OutputPath))
+	L.SetGlobal("http_proxy", lua.LString(Global.HttpProxy))
 
 	// 其他加载
 	gluasql.Preload(L)
