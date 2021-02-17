@@ -39,3 +39,6 @@ data/nginx/html/static/
 
 venv
 __pycache__
+
+main
+engine/engine
