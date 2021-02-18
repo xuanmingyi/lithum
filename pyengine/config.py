@@ -1,12 +1,14 @@
-DATABASE_DRIVER="mysql"
-DATABASE_DSN="root:password@(host:port)/dbname"
+DATABASE_DSN="mysql+pymysql://username:password@host:port/dbname"
+BASE_OUTPUT="/mnt/all/"
 
-PIPELINES=[
-    {"name": "jiandan_ooxx", "path": "pipelines.jiandan_ooxx"},
-    {"name": "jidan_ooxx_downloader", "path": "pipelines.jiandan_ooxx_downloader"}
-]
+PROXY={
+    "http": "http://127.0.0.1:58591",
+    "https": "http://127.0.0.1:58591"
+}
 
 try:
     from local_config import *
 except:
     pass
+
+from pipelines import PIPELINES
