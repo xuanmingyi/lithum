@@ -12,6 +12,9 @@ from bs4 import BeautifulSoup
 class LVV2ImagePipeline(BasePipeline):
     interval = 20 * 60
 
+    def __init__(self):
+        super(LVV2ImagePipeline, self).__init__(**{"name": "lvv2_image"})
+
     def task(self):
         threads = self.session.query(LVV2Thread).filter(LVV2Thread.status=="new").all()
         for _thread in threads:

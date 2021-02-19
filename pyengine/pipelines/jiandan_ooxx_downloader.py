@@ -10,6 +10,9 @@ import os
 class JiandanOOXXDownloader(BasePipeline):
     interval = 300
 
+    def __init__(self):
+        super(JiandanOOXXDownloader, self).__init__(**{"name": "jiandan_ooxx_downloader"})
+
     def task(self):
         images = self.session.query(JiandanOOXXImage).filter(JiandanOOXXImage.status=="new").all()
         for _image in images:

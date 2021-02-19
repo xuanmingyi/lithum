@@ -4,7 +4,7 @@ import os.path
 import re
 import requests
 
-from config import PROXY
+from config import PROXY, WHITE_LIST
 
 
 def download_html(url, proxy=False):
@@ -22,10 +22,11 @@ def download_html(url, proxy=False):
 
 
 def download_image(url, path, proxy=False):
+    host = re.search(r"://([\w|\.]+)/", url).group(1)
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0",
                "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-               "Host": re.search(r"://([\w|\.]+)/", url).group(1), "Referer": url}
+               "Host": host, "Referer": url}
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise Exception()

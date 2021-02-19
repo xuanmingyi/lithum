@@ -15,5 +15,9 @@ class BasePipeline(threading.Thread):
 
     def run(self):
         while True:
-            self.task()
+            try:
+                self.task()
+            except Exception as e:
+                print("{} 发生了错误".format(self.name))
+                print(e)
             time.sleep(self.interval)

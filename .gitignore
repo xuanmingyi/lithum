@@ -42,3 +42,4 @@ __pycache__
 
 main
 engine/engine
+*pyc

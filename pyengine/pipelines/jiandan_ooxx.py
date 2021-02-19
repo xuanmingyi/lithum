@@ -9,6 +9,9 @@ from models.jiandan_ooxx_image import JiandanOOXXImage
 class JiandanOOXX(BasePipeline):
     interval = 300
 
+    def __init__(self):
+        super(JiandanOOXX, self).__init__(**{"name": "jiandan_ooxx"})
+
     def task(self):
         html = download_html('http://jandan.net/ooxx')
         soup = BeautifulSoup(html, features="html.parser")

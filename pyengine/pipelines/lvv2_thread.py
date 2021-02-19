@@ -7,7 +7,10 @@ from models.lvv2_thread import LVV2Thread
 
 
 class LVV2ThreadPipeline(BasePipeline):
-    interval = 20*60
+    interval = 60*60
+
+    def __init__(self):
+        super(LVV2ThreadPipeline, self).__init__(**{"name": "lvv2_thread"})
 
     def task(self):
         html = download_html("https://lvv2.com/nsfw", proxy=True)
