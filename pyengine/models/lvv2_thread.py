@@ -1,5 +1,6 @@
 from models.base import Base
 from sqlalchemy import Column, String, Integer, DateTime
+from datetime import datetime
 
 
 class LVV2Thread(Base):
@@ -9,5 +10,5 @@ class LVV2Thread(Base):
     title = Column(String(255))
     url = Column(String(255))
     status = Column(String(32))
-    date = Column(DateTime)
+    date = Column(DateTime, default=datetime.now())
     tag = Column(String(32))
