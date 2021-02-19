@@ -3,6 +3,8 @@ import time
 
 from models.base import Session
 
+import logging
+
 
 class BasePipeline(threading.Thread):
     interval = 60
@@ -10,14 +12,14 @@ class BasePipeline(threading.Thread):
     def __init__(self, *args, **kwargs):
         threading.Thread.__init__(self, name=kwargs.get('name'))
         self.name = kwargs.get('name')
-        self.path = kwargs.get('path')
         self.session = Session()
 
     def run(self):
+        logging.info("启动 {} 线程".format(self.name))
         while True:
             try:
+                logging.info("执行 {} 的任务".format(self.name))
                 self.task()
             except Exception as e:
-                print("{} 发生了错误".format(self.name))
-                print(e)
+                logging.error("{} 执行任务发生错误: {}".format(self.name, e))
             time.sleep(self.interval)
