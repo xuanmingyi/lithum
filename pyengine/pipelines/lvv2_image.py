@@ -3,11 +3,9 @@ from pipelines.base import BasePipeline
 from models.lvv2_thread import LVV2Thread
 from models.lvv2_image import LVV2Image
 
-
 from utils import download_html
-
-
 from bs4 import BeautifulSoup
+
 
 class LVV2ImagePipeline(BasePipeline):
     interval = 20 * 60
@@ -23,6 +21,6 @@ class LVV2ImagePipeline(BasePipeline):
             for _image in soup.find_all("img", "lazy detailImg"):
                 url = _image["data-echo"]
                 if self.session.query(LVV2Image).filter(LVV2Image.url==url, LVV2Image.thread_id==_thread.id).count() == 0:
-                    self.session.add(LVV2Image(url=url, status="new", date="2021-02-19", thread_id=_thread.id))
+                    self.session.add(LVV2Image(url=url, status="new", thread_id=_thread.id, date=_thread.date))
                     _thread.status = "download"
                     self.session.commit()

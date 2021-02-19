@@ -18,5 +18,5 @@ class JiandanOOXX(BasePipeline):
         for _image in soup.find_all("a", class_="view_img_link"):
             url = "http:{}".format(_image["href"])
             if self.session.query(JiandanOOXXImage).filter(JiandanOOXXImage.url==url).count() == 0:
-                self.session.add(JiandanOOXXImage(url=url, status="new", date="2021-02-02"))
+                self.session.add(JiandanOOXXImage(url=url, status="new"))
                 self.session.commit()

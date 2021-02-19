@@ -20,5 +20,5 @@ class LVV2ThreadPipeline(BasePipeline):
             title = _thread.find("a", class_="title").text
             tag = _thread.find("h4").text
             if self.session.query(LVV2Thread).filter(LVV2Thread.url==url).count() == 0:
-                self.session.add(LVV2Thread(url=url, status="new", date="2021-02-19", tag=tag, title=title))
+                self.session.add(LVV2Thread(url=url, status="new", tag=tag, title=title))
                 self.session.commit()
