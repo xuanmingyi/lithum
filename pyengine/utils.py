@@ -35,8 +35,10 @@ def download_image(url, path, proxy=False):
         if response.status_code == 301:
             url = response.headers.get("Location")
             continue
+        if response.status_code == 404:
+            return 404
         if response.status_code != 200:
-            raise Exception("response.status_code 返回值不是 200 : {} ".foramt(url))
+            raise Exception("response.status_code 返回值不是 200 : {} , {}".format(url, response.status_code))
         filename = re.search(r"/(\w+\.\w+)$", url).group(1)
         try:
             os.makedirs(path)
@@ -48,4 +50,4 @@ def download_image(url, path, proxy=False):
         filepath = os.path.join(path, filename)
         with open(filepath, "wb") as f:
             f.write(response.content)
-        return
+        return 200

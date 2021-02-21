@@ -12,7 +12,7 @@ import time
 
 
 class LVV2ImageDownloaderPipeline(BasePipeline):
-    interval = 20 * 60
+    interval =  60
     threads_cache = {}
 
     def __init__(self):
@@ -21,9 +21,11 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
     def task(self):
         images = self.session.query(LVV2Image).filter(LVV2Image.status=="new").all()
         for _image in images:
-            download_image(_image.url, os.path.join(BASE_OUTPUT, "lvv2", str(_image.date), self.get_thread_by_id(_image.thread_id).title))
-            #_update_image = self.session.query(LVV2Image).get(_image.id)
-            _image.status = "download"
+            status_code = download_image(_image.url, os.path.join(BASE_OUTPUT, "lvv2", str(_image.date), self.get_thread_by_id(_image.thread_id).title))
+            if status_code == 200:
+                _image.status = "download"
+            if status_code == 404:
+                _image.status = "notfound"
             self.session.commit()
             time.sleep(1)
 
