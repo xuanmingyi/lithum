@@ -28,7 +28,7 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
                 if status_code == 404:
                     _image.status = "notfound"
             except Exception as e:
-                _image.status = str(e)
+                _image.status = str(e)[:16]
             self.session.commit()
             time.sleep(1)
 
