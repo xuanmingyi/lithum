@@ -34,12 +34,12 @@ class Action(object):
     def create(cls, *args, **kwargs):
         return cls(*args, **kwargs)
 
-
     def load_model(self, model):
-        for field in  self.dialog.fields:
+        for field in self.dialog.fields:
             for attr in model.attributes:
                 if field.name == attr.name:
                     field.attr = attr
+
 
 class Table(object):
     class Column(object):
@@ -66,7 +66,6 @@ class Table(object):
         for action in kwargs.get('row_actions'):
             self.row_actions.append(Action.create(**action))
 
-
     @classmethod
     def create(cls, *args, **kwargs):
         return cls(*args, **kwargs)
@@ -90,7 +89,6 @@ class Attribute(object):
             self.options = []
             for option in kwargs.get('options'):
                 self.options.append(self.Option.create(**option))
-
 
     @classmethod
     def create(cls, *args, **kwargs):

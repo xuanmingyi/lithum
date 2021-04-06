@@ -8,7 +8,7 @@ from base import load_models
 
 import json, datetime
 from tornado import escape
-DT_HANDLER = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) or     isinstance(obj, datetime.date) else None
+DT_HANDLER = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date) else None
 def json_encode(value):
     return json.dumps(value, default=DT_HANDLER).replace("</", "<\/")
 
@@ -66,11 +66,11 @@ class TableDataHandler(tornado.web.RequestHandler):
         for row in cursor.fetchall():
             data.append(row)
 
-        self.write(tornado.escape.json_encode({'code': 0, 'msg': '',
-            'count': count['COUNT(id)'], 'data': data}))
+        self.write(tornado.escape.json_encode({'code': 0, 'msg': '', 'count': count['COUNT(id)'], 'data': data}))
 
 
 class FormHandler(tornado.web.RequestHandler):
+
     def initialize(self, db):
         self.db = db
 
@@ -79,8 +79,7 @@ class FormHandler(tornado.web.RequestHandler):
         id = self.get_argument('id')
         action_name = self.get_argument('action')
 
-
-        current_object =self.db.get_by_id(name, id)
+        current_object = self.db.get_by_id(name, id)
 
         # 获取model
         models = load_models()
