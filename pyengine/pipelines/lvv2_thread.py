@@ -3,7 +3,7 @@ from pipelines.base import BasePipeline
 from utils import download_html
 from bs4 import BeautifulSoup
 
-from models.lvv2_thread import LVV2Thread
+from models import LVV2Thread
 
 
 class LVV2ThreadPipeline(BasePipeline):

@@ -1,7 +1,7 @@
 import threading
 import time
 
-from models.base import Session
+from models import Session
 
 import logging
 
