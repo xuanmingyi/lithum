@@ -12,7 +12,6 @@ class BasePipeline(threading.Thread):
     def __init__(self, *args, **kwargs):
         threading.Thread.__init__(self, name=kwargs.get('name'))
         self.name = kwargs.get('name')
-        self.session = Session()
 
     def run(self):
         logging.info("启动 {} 线程".format(self.name))

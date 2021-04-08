@@ -1,7 +1,7 @@
 from pipelines.base import BasePipeline
 
 from models import LVV2Image
-from models import LVV2Thread
+from models import LVV2Thread, SessionFactory
 from utils import download_image
 
 import os.path
@@ -9,6 +9,7 @@ import os.path
 from config import BASE_OUTPUT
 
 import time
+from sqlalchemy.orm import scoped_session
 
 
 class LVV2ImageDownloaderPipeline(BasePipeline):
@@ -19,6 +20,7 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
         super(LVV2ImageDownloaderPipeline, self).__init__(**{"name": "lvv2_image_dwonloader"})
 
     def task(self):
+        self.session = scoped_session(SessionFactory)
         images = self.session.query(LVV2Image).filter(LVV2Image.status == "new").all()
         for _image in images:
             try:
@@ -32,6 +34,7 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
                 _image.status = str(e)[:16]
             self.session.commit()
             time.sleep(1)
+        self.session.close()
 
     def get_thread_by_id(self, _id):
         if str(_id) in self.threads_cache.keys():

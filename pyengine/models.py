@@ -9,7 +9,7 @@ from datetime import datetime
 
 engine = create_engine(DATABASE_DSN, pool_pre_ping=True)
 Base = declarative_base()
-Session = sessionmaker(engine)
+SessionFactory = sessionmaker(engine)
 
 
 class JiandanImage(Base):

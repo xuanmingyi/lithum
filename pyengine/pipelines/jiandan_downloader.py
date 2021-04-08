@@ -1,6 +1,7 @@
 from pipelines.base import BasePipeline
 
-from models import JiandanImage
+from models import JiandanImage, SessionFactory
+from sqlalchemy.orm import scoped_session
 from utils import download_image
 
 from config import BASE_OUTPUT
@@ -15,8 +16,10 @@ class JiandanDownloader(BasePipeline):
         super(JiandanDownloader, self).__init__(**{"name": "jiandan_downloader"})
 
     def task(self):
+        self.session = scoped_session(SessionFactory)
         images = self.session.query(JiandanImage).filter(JiandanImage.status == "new").all()
         for _image in images:
             download_image(_image.url, os.path.join(BASE_OUTPUT, "jiandan", _image.date.strftime("%Y-%m-%d")))
             _image.status = "download"
             self.session.commit()
+        self.session.remove()
