@@ -1,8 +1,6 @@
 import threading
 import time
 
-from models import Session
-
 import logging
 
 

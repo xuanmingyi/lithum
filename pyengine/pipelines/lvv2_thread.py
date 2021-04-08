@@ -13,7 +13,7 @@ class LVV2ThreadPipeline(BasePipeline):
         super(LVV2ThreadPipeline, self).__init__(**{"name": "lvv2_thread"})
 
     def task(self):
-        self.sesson = scoped_session(SessionFactory)
+        self.session = scoped_session(SessionFactory)
         html = download_html("https://lvv2.com/nsfw", proxy=True)
         soup = BeautifulSoup(html, features="html.parser")
         for _thread in soup.find_all("div", class_="link show"):
@@ -23,4 +23,4 @@ class LVV2ThreadPipeline(BasePipeline):
             if self.session.query(LVV2Thread).filter(LVV2Thread.url == url).count() == 0:
                 self.session.add(LVV2Thread(url=url, status="new", tag=tag, title=title))
                 self.session.commit()
-        self.sesson.remove()
+        self.session.remove()
