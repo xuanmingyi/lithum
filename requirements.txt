@@ -1,0 +1,6 @@
+tornado
+pymysql
+sqlalchemy
+alembic
+requests
+beautifulsoup4

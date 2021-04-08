@@ -1,3 +1,14 @@
+import configParser
+import os
+
+def GetConfig(filename, section, name):
+    print(filename, section, name)
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    current_config_path = os.path.join(current_path, filename)
+    conf = configParser.ConfigParser()
+    conf.read(current_config_path, encoding="utf-8")
+    conf.items(name)
+
 DATABASE_DSN="mysql+pymysql://username:password@host:port/dbname"
 BASE_OUTPUT="/mnt/all/"
 

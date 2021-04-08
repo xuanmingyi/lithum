@@ -1,5 +1,0 @@
-sqlalchemy
-pymysql
-alembic
-requests
-beautifulsoup4
