@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from models import JiandanImage, SessionFactory
 from sqlalchemy.orm import scoped_session
 
+
 class Jiandan(BasePipeline):
     interval = 300
 

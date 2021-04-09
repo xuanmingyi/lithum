@@ -1,11 +1,11 @@
 from pipelines.base import BasePipeline
 
-from models import LVV2Thread
-from models import LVV2Image, SessionFactory
-
-from utils import download_html
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import scoped_session
+
+
+from models import LVV2Thread, LVV2Image, SessionFactory
+from utils import download_html
 
 
 class LVV2ImagePipeline(BasePipeline):

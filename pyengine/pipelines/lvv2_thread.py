@@ -1,10 +1,11 @@
 from pipelines.base import BasePipeline
 
-from utils import download_html
 from bs4 import BeautifulSoup
+from sqlalchemy.orm import scoped_session
 
 from models import LVV2Thread, SessionFactory
-from sqlalchemy.orm import scoped_session
+from utils import download_html
+
 
 class LVV2ThreadPipeline(BasePipeline):
     interval = 60*60

@@ -9,6 +9,9 @@ def GetConfig(filename, section, name):
     conf.read(current_config_path, encoding="utf-8")
     conf.items(name)
 
+
+
+
 DATABASE_DSN="mysql+pymysql://username:password@host:port/dbname"
 BASE_OUTPUT="/mnt/all/"
 

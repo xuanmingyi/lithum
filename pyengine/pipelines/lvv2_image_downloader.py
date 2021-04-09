@@ -1,15 +1,14 @@
 from pipelines.base import BasePipeline
 
-from models import LVV2Image
-from models import LVV2Thread, SessionFactory
-from utils import download_image
-
-import os.path
+from sqlalchemy.orm import scoped_session
 
 from config import BASE_OUTPUT
-
+import os.path
 import time
-from sqlalchemy.orm import scoped_session
+
+
+from models import LVV2Image, LVV2Thread, SessionFactory
+from utils import download_image
 
 
 class LVV2ImageDownloaderPipeline(BasePipeline):

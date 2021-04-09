@@ -1,10 +1,4 @@
-import logging
-import sys
-
 from pipelines import PIPELINES
-
-LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=LOG_FORMAT)
 
 
 class Runner(object):
