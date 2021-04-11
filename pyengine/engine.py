@@ -8,7 +8,6 @@ class Runner(object):
     def __init__(self):
         pipeline_names = list(map(lambda x: x.strip(), Config.Get('default.pipelines').split(',')))
 
-        print(pipeline_names)
         for _class in PIPELINES:
             c = _class()
             if c.name in pipeline_names:
