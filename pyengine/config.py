@@ -1,32 +1,29 @@
-import configParser
+from configparser import ConfigParser
 import os
 
-def GetConfig(filename, section, name):
-    print(filename, section, name)
-    current_path = os.path.abspath(os.path.dirname(__file__))
-    current_config_path = os.path.join(current_path, filename)
-    conf = configParser.ConfigParser()
-    conf.read(current_config_path, encoding="utf-8")
-    conf.items(name)
 
+class Config:
+    __data__ = None
 
+    @classmethod
+    def Load(cls):
+        current_path = os.path.abspath(os.path.dirname(__file__))
 
+        cls.__data__ = {}
 
-DATABASE_DSN="mysql+pymysql://username:password@host:port/dbname"
-BASE_OUTPUT="/mnt/all/"
+        conf = ConfigParser()
+        conf.read(os.path.join(current_path, 'alembic.ini'), encoding='utf-8')
+        cls.__data__['default.dsn'] = conf.get('alembic', 'sqlalchemy.url')
 
-PROXY={
-    "http": "http://127.0.0.1:8118",
-    "https": "http://127.0.0.1:8118"
-}
+        for filename in ['config.ini', 'local_config.ini']:
+            conf = ConfigParser()
+            conf.read(os.path.join(current_path, filename), encoding='utf-8')
+            for section in conf.sections():
+                for item in conf.items(section):
+                    cls.__data__['{}.{}'.format(section, item[0])] = item[1].strip()
 
-PROXY_LIST = []
-WHITE_LIST = ["www.xsimg.xyz", "www.smximg.com", "smmimg.com", "www.s2tu.com", "luoimg.com", "sxeimg.com", "skeimg.com",
-              "sxotu.com", "www.1024image.com", "www.x6img.com", "images2.imgbox.com", "www.youimg.xyz", "www.vxotu.com",
-              "pic606.com", "www.xsspic.com", "www.kanjiantu.com", "skuimg.com", "tuimg.xyz"]
-
-
-try:
-    from local_config import *
-except:
-    pass
+    @classmethod
+    def Get(cls, name):
+        if not cls.__data__:
+            cls.Load()
+        return cls.__data__.get(name)

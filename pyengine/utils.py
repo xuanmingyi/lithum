@@ -4,9 +4,7 @@ import os.path
 import re
 import requests
 
-from config import PROXY, WHITE_LIST
-
-import logging
+from config import Config
 
 
 def download_html(url, proxy=False):
@@ -15,7 +13,7 @@ def download_html(url, proxy=False):
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                "Host": re.search(r"://([\w|\.]+)/", url).group(1), "Referer": url}
     if proxy:
-        response = requests.get(url, headers=headers, proxies=PROXY)
+        response = requests.get(url, headers=headers, proxies={'http': Config.Get('default.http_proxy'),'https': Config.Get('default.https_proxy')})
     else:
         response = requests.get(url, headers=headers)
     if response.status_code != 200:

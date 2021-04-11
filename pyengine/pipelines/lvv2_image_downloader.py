@@ -2,7 +2,7 @@ from pipelines.base import BasePipeline
 
 from sqlalchemy.orm import scoped_session
 
-from config import BASE_OUTPUT
+from config import Config
 import os.path
 import time
 
@@ -23,10 +23,11 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
         images = self.session.query(LVV2Image).filter(LVV2Image.status == "new").all()
         for _image in images:
             try:
-                status_code = download_image(_image.url, os.path.join(BASE_OUTPUT, "lvv2", _image.date.strftime("%Y-%m-%d"),
+                status_code = download_image(_image.url, os.path.join(Config.Get('default.base_output'), "lvv2", _image.date.strftime("%Y-%m-%d"),
                                                                       self.get_thread_by_id(_image.thread_id).title))
                 if status_code == 200:
                     _image.status = "download"
+                    self.logger.info('下载图片: {}'.format(_image.url))
                 if status_code == 404:
                     _image.status = "notfound"
             except Exception as e:

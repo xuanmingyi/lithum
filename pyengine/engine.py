@@ -1,12 +1,18 @@
 from pipelines import PIPELINES
+from config import Config
 
 
 class Runner(object):
     pipelines = []
 
     def __init__(self):
+        pipeline_names = list(map(lambda x: x.strip(), Config.Get('default.pipelines').split(',')))
+
+        print(pipeline_names)
         for _class in PIPELINES:
-            self.pipelines.append(_class())
+            c = _class()
+            if c.name in pipeline_names:
+                self.pipelines.append(_class())
 
     def start(self):
         for pipeline in self.pipelines:
