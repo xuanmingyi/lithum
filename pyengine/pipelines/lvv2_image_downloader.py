@@ -16,7 +16,7 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
     threads_cache = {}
 
     def __init__(self):
-        super(LVV2ImageDownloaderPipeline, self).__init__(**{"name": "lvv2_image_dwonloader"})
+        super(LVV2ImageDownloaderPipeline, self).__init__(**{"name": "lvv2_image_downloader"})
 
     def task(self):
         self.session = scoped_session(SessionFactory)

@@ -2,6 +2,7 @@ from pipelines.base import BasePipeline
 
 from utils import download_html
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 from models import JiandanImage, SessionFactory
 from sqlalchemy.orm import scoped_session
@@ -20,6 +21,6 @@ class Jiandan(BasePipeline):
         for _image in soup.find_all("a", class_="view_img_link"):
             url = "http:{}".format(_image["href"])
             if self.session.query(JiandanImage).filter(JiandanImage.url == url).count() == 0:
-                self.session.add(JiandanImage(url=url, status="new"))
+                self.session.add(JiandanImage(url=url, status="new", date=datetime.now()))
                 self.session.commit()
         self.session.remove()

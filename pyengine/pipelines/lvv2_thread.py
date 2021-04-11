@@ -2,6 +2,7 @@ from pipelines.base import BasePipeline
 
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import scoped_session
+from datetime import datetime
 
 from models import LVV2Thread, SessionFactory
 from utils import download_html
@@ -22,6 +23,6 @@ class LVV2ThreadPipeline(BasePipeline):
             title = _thread.find("a", class_="title").text
             tag = _thread.find("h4").text
             if self.session.query(LVV2Thread).filter(LVV2Thread.url == url).count() == 0:
-                self.session.add(LVV2Thread(url=url, status="new", tag=tag, title=title))
+                self.session.add(LVV2Thread(url=url, status="new", tag=tag, title=title, date=datetime.now()))
                 self.session.commit()
         self.session.remove()
