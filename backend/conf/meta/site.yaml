@@ -1,6 +1,0 @@
-model:
-  name: site
-  model_name: Site
-  attributes:
-    - name: id
-      display: ID
