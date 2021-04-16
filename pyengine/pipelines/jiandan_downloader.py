@@ -18,9 +18,12 @@ class JiandanDownloader(BasePipeline):
     def task(self):
         self.session = scoped_session(SessionFactory)
         images = self.session.query(JiandanImage).filter(JiandanImage.status == "new").all()
+        count = 0
         for _image in images:
             download_image(_image.url, os.path.join(Config.Get('default.base_output'), "jiandan", _image.date.strftime("%Y-%m-%d")))
             _image.status = "download"
             self.session.commit()
+            count += 1
             self.logger.info('下载图片: {}'.format(_image.url))
+        self.logger.info('下载图片: {} 张'.format(count))
         self.session.remove()
