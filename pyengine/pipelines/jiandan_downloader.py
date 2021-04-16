@@ -18,12 +18,18 @@ class JiandanDownloader(BasePipeline):
     def task(self):
         self.session = scoped_session(SessionFactory)
         images = self.session.query(JiandanImage).filter(JiandanImage.status == "new").all()
-        count = 0
+        download_count = 0
+        exception_count = 0
         for _image in images:
-            download_image(_image.url, os.path.join(Config.Get('default.base_output'), "jiandan", _image.date.strftime("%Y-%m-%d")))
-            _image.status = "download"
+            try:
+                download_image(_image.url, os.path.join(Config.Get('default.base_output'), "jiandan", _image.date.strftime("%Y-%m-%d")))
+                _image.status = "download"
+                download_count += 1
+            except Exception as e:
+                _image.status = 'exception'
+                _image.exception_string = str(e)
+                exception_count += 1
             self.session.commit()
-            count += 1
             self.logger.info('下载图片: {}'.format(_image.url))
-        self.logger.info('下载图片: {} 张'.format(count))
+        self.logger.info('下载图片: 成功 {} 张, 异常 {} 张'.format(download_count, exception_count))
         self.session.remove()

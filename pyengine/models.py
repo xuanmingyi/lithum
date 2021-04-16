@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, String, Integer, DateTime, Text
 
 from config import Config
 from datetime import datetime
@@ -19,6 +19,7 @@ class JiandanImage(Base):
     url = Column(String(256))
     status = Column(String(32))
     date = Column(DateTime, default=datetime.now())
+    exception_string = Column(Text)
 
 
 class LVV2Image(Base):
@@ -29,6 +30,7 @@ class LVV2Image(Base):
     url = Column(String(256))
     status = Column(String(32))
     date = Column(DateTime, default=datetime.now())
+    exception_string = Column(Text)
 
 
 class LVV2Thread(Base):
@@ -40,3 +42,4 @@ class LVV2Thread(Base):
     status = Column(String(32))
     date = Column(DateTime, default=datetime.now())
     tag = Column(String(32))
+    exception_string = Column(Text)

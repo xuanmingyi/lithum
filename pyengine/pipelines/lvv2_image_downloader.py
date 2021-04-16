@@ -36,7 +36,8 @@ class LVV2ImageDownloaderPipeline(BasePipeline):
                     _image.status = 'notfound'
                     notfound_count += 1
             except Exception as e:
-                _image.status = str(e)[:16]
+                _image.status = 'exception'
+                _image.exception_string = str(e)
                 exception_count += 1
             self.session.commit()
             time.sleep(1)
